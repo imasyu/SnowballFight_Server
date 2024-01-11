@@ -1,9 +1,13 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+class UIManager;
+
 //テストシーンを管理するクラス
 class TestScene : public GameObject
 {
+	std::vector<UIManager*> pUIManagerList_;
+
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）

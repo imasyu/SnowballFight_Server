@@ -1,4 +1,8 @@
 #include "TestScene.h"
+#include "Engine/SceneManager.h"
+#include "Engine/Input.h"
+#include "UIManager.h"
+#include "TitleUIManager.h"
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)

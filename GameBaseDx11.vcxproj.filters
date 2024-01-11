@@ -24,6 +24,12 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
+    <Filter Include="03Scene">
+      <UniqueIdentifier>{566e9812-a813-491b-a0fd-ddeda5c1b587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04UI">
+      <UniqueIdentifier>{f2db85c0-3f0f-4059-96aa-fa74f0d99151}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\BoxCollider.cpp">
@@ -80,7 +86,6 @@
     <ClCompile Include="Engine\Transform.cpp">
       <Filter>01Engine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Engine\Audio.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
@@ -95,6 +100,18 @@
     </ClCompile>
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>03Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBase.cpp">
+      <Filter>04UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleUIManager.cpp">
+      <Filter>04UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,7 +169,6 @@
     <ClInclude Include="Engine\Transform.h">
       <Filter>01Engine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h" />
     <ClInclude Include="Engine\Audio.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
@@ -167,6 +183,18 @@
     </ClInclude>
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>04UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBase.h">
+      <Filter>04UI</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleUIManager.h">
+      <Filter>04UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

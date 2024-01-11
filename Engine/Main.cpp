@@ -192,13 +192,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 
 				buff[0] = 'a';
-				buff[1] = '\n';
 
 				// 終端記号の追加
 				buff[ret] = '\0';
 
 				// 出力
 				OutputDebugString(buff);
+				OutputDebugString("\n");
 
 				// 送信
 				ret = send(sock, buff, strlen(buff), 0);
