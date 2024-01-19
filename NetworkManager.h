@@ -13,7 +13,7 @@ namespace NetworkManager {
 	//‰Šú‰»ˆ—
 	int Initialize();
 
-	int CreateSocket();
+	int CreateSocket(SOCKET_MODE mode, unsigned short port);
 
 	int Update();
 

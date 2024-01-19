@@ -1,6 +1,4 @@
 #include "NetworkManager.h"
-
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -23,9 +21,10 @@ namespace NetworkManager {
 	int Initialize() {
 		// WinSock初期化
 		WSADATA wsaData;
-		int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (ret != 0)
 		{
+			OutputDebugString("Winsock初期化失敗\n");
 			return -1;
 		}
 
@@ -34,8 +33,7 @@ namespace NetworkManager {
 		// リスンソケット作成失敗
 		if (sock < 0)
 		{
-			// エラーコードを出力
-			// 終了
+			OutputDebugString("リスンソケット作成失敗\n");
 			return 1;
 		}
 
@@ -49,22 +47,16 @@ namespace NetworkManager {
 		// ソケットアドレス情報設定	※固定のポート番号設定
 		if (bind(sock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
 		{
-			// エラーコードを出力
-			// 終了
+			OutputDebugString("ソケットアドレスの設定\n");
 			return 1;
 		}
 
 		// リスン状態に設定	キューのサイズ:1
 		if (listen(sock, 1) != 0)
 		{
-			// エラーコードを出力
-			// 終了
+			OutputDebugString("リスン状態にするの失敗\n");
 			return 1;
 		}
-
-		// 通信用ソケット ( クライアントのソケットとこのソケット間にコネクションが確立 )
-		int sock;
-
 
 		struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
 		int addrlen = sizeof(clientAddr);	// clientAddrのサイズ
@@ -73,30 +65,23 @@ namespace NetworkManager {
 		sock = accept(sock, (struct sockaddr*)&clientAddr, &addrlen);
 		if (sock < 0)
 		{
-			// エラーコードを出力
-			// 終了
+			OutputDebugString("コネクション確立失敗n");
 			return 1;
 		}
 
 	}
 
-	int CreateSocket()
+	int CreateSocket(SOCKET_MODE mode, unsigned short port)
 	{
-		// リスンソケットの作成
-		//socket = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-		// リスンソケット作成失敗
-		if (socket < 0)
-		{
-			// エラーコードを出力
-			// 終了
-			return 1;
-		}
+		if (mode == SOCKET_MODE::UDP_SERVER)
+			make_unique<UdpServerSocket>;
+	make_unique<UdpClientSocket>;
+
 	}
 
 	int Update()
 	{
-
-		char buff[MESSAGELENGTH];	// 送受信メッセージの格納領域
+		char buff[NetworkManager::MESSAGELENGTH];	// 送受信メッセージの格納領域
 		// クライアントからのメッセージ受信
 		ret = recv(sock, buff, sizeof(buff) - 1, 0);
 		if (ret < 0)
