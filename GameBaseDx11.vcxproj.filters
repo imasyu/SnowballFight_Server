@@ -27,8 +27,8 @@
     <Filter Include="03Scene">
       <UniqueIdentifier>{566e9812-a813-491b-a0fd-ddeda5c1b587}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04UI">
-      <UniqueIdentifier>{f2db85c0-3f0f-4059-96aa-fa74f0d99151}</UniqueIdentifier>
+    <Filter Include="Network">
+      <UniqueIdentifier>{42040ee4-d402-4ea1-843c-fedddbc8423b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -104,14 +104,14 @@
     <ClCompile Include="TestScene.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
-    <ClCompile Include="UIManager.cpp">
-      <Filter>04UI</Filter>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="UIBase.cpp">
-      <Filter>04UI</Filter>
+    <ClCompile Include="UdpServer.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="TitleUIManager.cpp">
-      <Filter>04UI</Filter>
+    <ClCompile Include="UdpClient.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,14 +187,14 @@
     <ClInclude Include="TestScene.h">
       <Filter>03Scene</Filter>
     </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>04UI</Filter>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="UIBase.h">
-      <Filter>04UI</Filter>
+    <ClInclude Include="UdpServer.h">
+      <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="TitleUIManager.h">
-      <Filter>04UI</Filter>
+    <ClInclude Include="UdpClient.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

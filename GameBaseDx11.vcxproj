@@ -148,10 +148,10 @@
     <ClCompile Include="Engine\Text.cpp" />
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Engine\Transform.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="TestScene.cpp" />
-    <ClCompile Include="TitleUIManager.cpp" />
-    <ClCompile Include="UIBase.cpp" />
-    <ClCompile Include="UIManager.cpp" />
+    <ClCompile Include="UdpClient.cpp" />
+    <ClCompile Include="UdpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio.h" />
@@ -177,10 +177,10 @@
     <ClInclude Include="Engine\Text.h" />
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Engine\Transform.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="TestScene.h" />
-    <ClInclude Include="TitleUIManager.h" />
-    <ClInclude Include="UIBase.h" />
-    <ClInclude Include="UIManager.h" />
+    <ClInclude Include="UdpClient.h" />
+    <ClInclude Include="UdpServer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
