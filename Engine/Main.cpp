@@ -3,10 +3,6 @@
 //　最終更新日：2023/10/20
 //
 
-
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-
 #include <Windows.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -21,7 +17,6 @@
 #include "Audio.h"
 #include "VFX.h"
 
-#pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib,"Winmm.lib")
 
 //定数宣言

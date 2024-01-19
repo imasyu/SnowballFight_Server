@@ -13,12 +13,8 @@ namespace NetworkManager {
 	//‰Šú‰»ˆ—
 	int Initialize();
 
-	void CreateSocket();
+	int CreateSocket();
 
-	//I—¹ˆ—
-	int Finalize();
-
-	//XVˆ—
-	void Update();
+	int Update();
 
 }
