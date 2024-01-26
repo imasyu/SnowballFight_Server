@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace NetworkManager {
 
@@ -11,7 +12,7 @@ namespace NetworkManager {
 	//‰Šú‰»ˆ—
 	int Initialize();
 
-	int CreateSocket(SOCKET_MODE mode, unsigned short port);
+	int CreateSocket(SOCKET_MODE mode, std::string port);
 
 	int Update();
 

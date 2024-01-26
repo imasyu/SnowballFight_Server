@@ -1,14 +1,14 @@
 #pragma once
-#include <winsock2.h>
+#include <string>
 #include "Udp.h"
 
 class UdpServer : public Udp
 {
 	int ret;
-	SOCKET sock;
+	int sock;
 
 public:
-	int CreateSocket();
+	int CreateSocket(std::string port);
 	int Update();
 
 };

@@ -3,10 +3,11 @@
 #include "Engine/Input.h"
 #include "NetworkManager.h"
 #include "Engine/Text.h"
+#include <string>
 
 namespace {
-	const unsigned short SERVERPORT = 8888;
-	
+	const std::string SERVERPORT = "192.168.43.50";
+
 	Text* pText = nullptr;
 	int timeCount = 0;
 
@@ -31,6 +32,7 @@ void TestScene::Initialize()
 //çXêV
 void TestScene::Update()
 {
+	NetworkManager::Update();
 
 }
 

@@ -1,14 +1,14 @@
 #pragma once
-#include <WinSock2.h>
+#include <string>
 #include "Udp.h"
 
 class UdpClient : public Udp
 {
 	int ret;
-	SOCKET sock;
+	int sock;
 
 public:
-	int CreateSocket() override;
+	int CreateSocket(std::string port) override;
 	int Update() override;
 
 };

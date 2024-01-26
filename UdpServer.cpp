@@ -1,4 +1,5 @@
 #include "UdpServer.h"
+#include <WS2tcpip.h>
 
 namespace {
 	// ポート番号
@@ -7,7 +8,7 @@ namespace {
 	const unsigned int MESSAGELENGTH = 1024;
 }
 
-int UdpServer::CreateSocket()
+int UdpServer::CreateSocket(std::string port)
 {
 	// リスンソケットの作成
 	sock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
@@ -47,6 +48,15 @@ int UdpServer::CreateSocket()
 	{
 		OutputDebugString("コネクション確立失敗n");
 		return 1;
+	}
+
+	// ソケットsockをノンブロッキングソケットにする
+	unsigned long cmdarg = 0x01;
+	int ret = ioctlsocket(sock, FIONBIO, &cmdarg);
+
+	if (ret == SOCKET_ERROR)
+	{
+		// エラー処理
 	}
 
 	return 1;
