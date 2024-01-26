@@ -5,7 +5,7 @@ namespace {
 	// ポート番号
 	const unsigned short SERVERPORT = 8888;
 	// 送受信するメッセージの最大値
-	const unsigned int MESSAGELENGTH = 1024;
+	const unsigned int MESSAGELENGTH = 16;
 }
 
 int UdpServer::CreateSocket(std::string port)
@@ -71,16 +71,9 @@ int UdpServer::Update()
 	ret = recv(sock, buff, sizeof(buff) - 1, 0);
 	
 	//受信データなし
-	if (ret != 0)
+	if (ret < 0)
 	{
-		int errorCode = WSAGetLastError();
-		
-		// 受信データがない状況の時はエラー処理は行わない
-		if (errorCode != WSAEWOULDBLOCK)
-		{
-			// エラー
-			return -1;
-		}
+		return 1;
 	}
 
 	// 出力

@@ -5,7 +5,7 @@ namespace {
 	// ポート番号
 	const unsigned short SERVERPORT = 8888;
 	// 送受信するメッセージの最大値
-	const unsigned int MESSAGELENGTH = 1024;
+	const unsigned int MESSAGELENGTH = 16;
 }
 
 int UdpClient::CreateSocket(std::string port)
@@ -80,6 +80,7 @@ int UdpClient::Update()
 		// 終端記号の追加
 		buff[ret] = '\0';
 		OutputDebugString(buff);
+		OutputDebugString("\n");
 		return 1;
 	}
 }
