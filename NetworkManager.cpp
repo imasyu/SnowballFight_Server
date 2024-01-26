@@ -10,7 +10,6 @@ namespace NetworkManager {
 	// 送受信するメッセージの最大値
 	const unsigned int MESSAGELENGTH = 1024;
 
-	SOCKET sock_;
 	Udp* socket_;
 
 	int Initialize() {

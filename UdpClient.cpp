@@ -11,7 +11,6 @@ namespace {
 int UdpClient::CreateSocket(std::string port)
 {
 	// ソケットの作成
-	SOCKET sock;
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 
 	if (sock < 0)

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Udp.h"
+#include <WS2tcpip.h>
 
 class UdpClient : public Udp
 {
