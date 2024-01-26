@@ -5,11 +5,11 @@ namespace {
 	// ポート番号
 	const unsigned short SERVERPORT = 8888;
 	// 送受信するメッセージの最大値
-	const unsigned int MESSAGELENGTH = 16;
+	const unsigned int MESSAGELENGTH = 1024;
 
 	struct DATA {
-		float posX;
-		float posZ;
+		double posX;
+		double posZ;
 	};
 
 }
@@ -126,12 +126,12 @@ int UdpServer::Update()
 	OutputDebugString("X = ");
 	OutputDebugStringA(std::to_string(data.posX).c_str());
 	OutputDebugString(" : Y = ");
-	OutputDebugStringA(std::to_string(data.posX).c_str());
+	OutputDebugStringA(std::to_string(data.posZ).c_str());
 	OutputDebugString("\n");
 
 	//送信
-	data.posX = 10.0f;
-	data.posZ = -5.0f;
+	data.posX = 12345678.0f;
+	data.posZ = 0.0f;
 
 	// 送信
 	if (!Send(sock, data)) {

@@ -4,6 +4,7 @@
 #include "NetworkManager.h"
 #include "Engine/Text.h"
 #include <string>
+#include "Player.h"
 
 namespace {
 	const std::string SERVERPORT = "192.168.43.50";
@@ -11,7 +12,13 @@ namespace {
 	Text* pText = nullptr;
 	int timeCount = 0;
 
+	Player* pPlayer1 = nullptr;
+	Player* pPlayer2 = nullptr;
+
 }
+
+//整数値を送ってみて正常化試す
+//それで正常ならそれを１０万倍してその桁を使用する
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -27,6 +34,7 @@ void TestScene::Initialize()
 
 	pText = new Text();
 	pText->Initialize();
+
 
 }
 
