@@ -1,6 +1,16 @@
 #include "TestScene.h"
 #include "Engine/SceneManager.h"
 #include "Engine/Input.h"
+#include "NetworkManager.h"
+#include "Engine/Text.h"
+
+namespace {
+	const unsigned short SERVERPORT = 8888;
+	
+	Text* pText = nullptr;
+	int timeCount = 0;
+
+}
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
@@ -11,6 +21,10 @@ TestScene::TestScene(GameObject * parent)
 //初期化
 void TestScene::Initialize()
 {
+	NetworkManager::Initialize();
+	NetworkManager::CreateSocket(NetworkManager::SOCKET_MODE::UDP_SERVER, SERVERPORT);
+
+	pText->Initialize();
 
 }
 
@@ -23,6 +37,8 @@ void TestScene::Update()
 //描画
 void TestScene::Draw()
 {
+	pText->Draw(30, 30, (timeCount / 60));
+
 }
 
 //開放

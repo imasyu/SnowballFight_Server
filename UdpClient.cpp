@@ -1,4 +1,5 @@
 #include "UdpClient.h"
+#include <WS2tcpip.h>
 
 namespace {
 	// ポート番号
@@ -7,70 +8,32 @@ namespace {
 	const unsigned int MESSAGELENGTH = 1024;
 }
 
-int UdpClient::Initialize() {
-	// WinSock初期化
-	WSADATA wsaData;
-	ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (ret != 0)
-	{
-		OutputDebugString("Winsock初期化失敗\n");
-		return -1;
-	}
-
-	// リスンソケットの作成
-	sock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-	// リスンソケット作成失敗
-	if (sock < 0)
-	{
-		OutputDebugString("リスンソケット作成失敗\n");
-		return 1;
-	}
-
-	// bind
-	struct sockaddr_in bindAddr;	// bind用のソケットアドレス情報
-	memset(&bindAddr, 0, sizeof(bindAddr));
-	bindAddr.sin_family = AF_INET;
-	bindAddr.sin_port = htons(SERVERPORT);
-	bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	// ソケットアドレス情報設定	※固定のポート番号設定
-	if (bind(sock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
-	{
-		OutputDebugString("ソケットアドレスの設定\n");
-		return 1;
-	}
-
-	// リスン状態に設定	キューのサイズ:1
-	if (listen(sock, 1) != 0)
-	{
-		OutputDebugString("リスン状態にするの失敗\n");
-		return 1;
-	}
-
-	struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
-	int addrlen = sizeof(clientAddr);	// clientAddrのサイズ
-
-	// クライアントからのconnect()を受けて、コネクション確立済みのソケット作成
-	sock = accept(sock, (struct sockaddr*)&clientAddr, &addrlen);
-	if (sock < 0)
-	{
-		OutputDebugString("コネクション確立失敗n");
-		return 1;
-	}
-
-}
-
 int UdpClient::CreateSocket()
 {
-	// リスンソケットの作成
-	//socket = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-	// リスンソケット作成失敗
-	if (socket < 0)
+	// ソケットの作成
+	int sock;
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (sock < 0)
 	{
-		// エラーコードを出力
-		// 終了
+		OutputDebugString(WSAGetLastError() + " : Error\n");
 		return 1;
 	}
+
+	// 接続先サーバのソケットアドレス情報設定
+	struct sockaddr_in serverAddr;
+	memset(&serverAddr, 0, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(SERVERPORT);
+	inet_pton(AF_INET, "192.168.43.50", &serverAddr.sin_addr.s_addr);	// ほんとはよくない。せめて127.0.0.1を定数化
+
+	// 接続要求
+	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0)
+	{
+		OutputDebugString(WSAGetLastError() + " : Error\n");
+		return 1;
+	}
+
 }
 
 int UdpClient::Update()
@@ -101,4 +64,5 @@ int UdpClient::Update()
 		return -1;
 	}
 
+	return 1;
 }

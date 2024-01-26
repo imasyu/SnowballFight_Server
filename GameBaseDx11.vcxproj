@@ -150,6 +150,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="TestScene.cpp" />
+    <ClCompile Include="Udp.cpp" />
     <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="UdpServer.cpp" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="TestScene.h" />
+    <ClInclude Include="Udp.h" />
     <ClInclude Include="UdpClient.h" />
     <ClInclude Include="UdpServer.h" />
   </ItemGroup>

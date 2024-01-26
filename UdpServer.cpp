@@ -9,14 +9,12 @@ namespace {
 
 int UdpServer::CreateSocket()
 {
-
 	// リスンソケットの作成
 	sock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-	// リスンソケット作成失敗
-	if (sock < 0)
+	if (sock <= 0)
 	{
 		OutputDebugString("リスンソケット作成失敗\n");
-		return 1;
+		return -1;
 	}
 
 	// bind
@@ -51,6 +49,7 @@ int UdpServer::CreateSocket()
 		return 1;
 	}
 
+	return 1;
 }
 
 int UdpServer::Update()
@@ -81,4 +80,5 @@ int UdpServer::Update()
 		return -1;
 	}
 
+	return 1;
 }

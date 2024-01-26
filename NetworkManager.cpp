@@ -1,9 +1,7 @@
 #include "NetworkManager.h"
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <WS2tcpip.h>
+#include "UdpServer.h"
+#include "UdpClient.h"
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
@@ -15,76 +13,43 @@ namespace NetworkManager {
 	// 送受信するメッセージの最大値
 	const unsigned int MESSAGELENGTH = 1024;
 
-	int ret; 
-	SOCKET sock;
+	int ret_; 
+	SOCKET sock_;
+	Udp* socket_;
 
 	int Initialize() {
 		// WinSock初期化
 		WSADATA wsaData;
-		ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-		if (ret != 0)
+		ret_ = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (ret_ != 0)
 		{
 			OutputDebugString("Winsock初期化失敗\n");
 			return -1;
 		}
 
-		// リスンソケットの作成
-		sock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-		// リスンソケット作成失敗
-		if (sock < 0)
-		{
-			OutputDebugString("リスンソケット作成失敗\n");
-			return 1;
-		}
-
-		// bind
-		struct sockaddr_in bindAddr;	// bind用のソケットアドレス情報
-		memset(&bindAddr, 0, sizeof(bindAddr));
-		bindAddr.sin_family = AF_INET;
-		bindAddr.sin_port = htons(SERVERPORT);
-		bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-		// ソケットアドレス情報設定	※固定のポート番号設定
-		if (bind(sock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
-		{
-			OutputDebugString("ソケットアドレスの設定\n");
-			return 1;
-		}
-
-		// リスン状態に設定	キューのサイズ:1
-		if (listen(sock, 1) != 0)
-		{
-			OutputDebugString("リスン状態にするの失敗\n");
-			return 1;
-		}
-
-		struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
-		int addrlen = sizeof(clientAddr);	// clientAddrのサイズ
-
-		// クライアントからのconnect()を受けて、コネクション確立済みのソケット作成
-		sock = accept(sock, (struct sockaddr*)&clientAddr, &addrlen);
-		if (sock < 0)
-		{
-			OutputDebugString("コネクション確立失敗n");
-			return 1;
-		}
-
+		return 1;
 	}
 
 	int CreateSocket(SOCKET_MODE mode, unsigned short port)
 	{
-		if (mode == SOCKET_MODE::UDP_SERVER)
-			make_unique<UdpServerSocket>;
-	make_unique<UdpClientSocket>;
-
+		if (mode == SOCKET_MODE::UDP_SERVER) {
+			socket_ = new UdpServer;
+			socket_->CreateSocket();
+		}
+		if (mode == SOCKET_MODE::UDP_CLIENT) {
+			socket_ = new UdpClient;
+			socket_->CreateSocket();
+		}
+		
+		return 1;
 	}
 
 	int Update()
 	{
 		char buff[NetworkManager::MESSAGELENGTH];	// 送受信メッセージの格納領域
 		// クライアントからのメッセージ受信
-		ret = recv(sock, buff, sizeof(buff) - 1, 0);
-		if (ret < 0)
+		ret_ = recv(sock_, buff, sizeof(buff) - 1, 0);
+		if (ret_ < 0)
 		{
 			// ぬける
 			return -1;
@@ -93,20 +58,21 @@ namespace NetworkManager {
 		buff[0] = 'a';
 
 		// 終端記号の追加
-		buff[ret] = '\0';
+		buff[ret_] = '\0';
 
 		// 出力
 		OutputDebugString(buff);
 		OutputDebugString("\n");
 
 		// 送信
-		ret = send(sock, buff, strlen(buff), 0);
-		if (ret != strlen(buff))
+		ret_ = send(sock_, buff, strlen(buff), 0);
+		if (ret_ != strlen(buff))
 		{
 			// ぬける
 			return -1;
 		}
 
+		return 1;
 	}
 
 

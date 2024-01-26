@@ -1,15 +1,15 @@
 #pragma once
-#include <winsock2.h>
+#include <WinSock2.h>
+#include "Udp.h"
 
-class UdpClient
+class UdpClient : public Udp
 {
 	int ret;
 	SOCKET sock;
 
 public:
-	int Initialize();
-	int CreateSocket();
-	int Update();
+	int CreateSocket() override;
+	int Update() override;
 
 };
 

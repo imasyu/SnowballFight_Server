@@ -113,6 +113,9 @@
     <ClCompile Include="UdpClient.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="Udp.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -194,6 +197,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="UdpClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Udp.h">
       <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
