@@ -5,7 +5,7 @@
 class UdpClient : public Udp
 {
 	int ret;
-	int sock;
+	SOCKET sock;
 
 public:
 	int CreateSocket(std::string port) override;

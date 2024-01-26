@@ -29,14 +29,14 @@ int UdpServer::CreateSocket(std::string port)
 	if (bind(sock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
 	{
 		OutputDebugString("ソケットアドレスの設定\n");
-		return 1;
+		return -1;
 	}
 
 	// リスン状態に設定	キューのサイズ:1
 	if (listen(sock, 1) != 0)
 	{
 		OutputDebugString("リスン状態にするの失敗\n");
-		return 1;
+		return -1;
 	}
 
 	struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
@@ -46,8 +46,8 @@ int UdpServer::CreateSocket(std::string port)
 	sock = accept(sock, (struct sockaddr*)&clientAddr, &addrlen);
 	if (sock < 0)
 	{
-		OutputDebugString("コネクション確立失敗n");
-		return 1;
+		OutputDebugString("コネクション確立失敗\n");
+		return -1;
 	}
 
 	// ソケットsockをノンブロッキングソケットにする
@@ -56,7 +56,8 @@ int UdpServer::CreateSocket(std::string port)
 
 	if (ret == SOCKET_ERROR)
 	{
-		// エラー処理
+		OutputDebugString("ブロッキングソケット化失敗\n");
+		return -1;
 	}
 
 	return 1;

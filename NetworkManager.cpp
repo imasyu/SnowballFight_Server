@@ -10,15 +10,14 @@ namespace NetworkManager {
 	// 送受信するメッセージの最大値
 	const unsigned int MESSAGELENGTH = 1024;
 
-	int ret_; 
 	SOCKET sock_;
 	Udp* socket_;
 
 	int Initialize() {
 		// WinSock初期化
 		WSADATA wsaData;
-		ret_ = WSAStartup(MAKEWORD(2, 2), &wsaData);
-		if (ret_ != 0)
+		int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (ret != 0)
 		{
 			OutputDebugString("Winsock初期化失敗\n");
 			return -1;
