@@ -7,58 +7,6 @@ namespace {
 	// 送受信するメッセージの最大値
 	const unsigned int MESSAGELENGTH = 1024;
 
-	struct DATA {
-		double posX;
-		double posZ;
-	};
-
-}
-
-bool Recv(int sock, DATA* value)
-{
-	DATA recvValue;	// 受信データの格納領域...ネットワークバイトオーダー状態
-	int ret;		// 成否の判定用
-
-	// 受信
-	ret = recv(sock, (char*)&recvValue, sizeof(recvValue), 0);
-	// 失敗
-	if (ret != sizeof(recvValue))
-	{
-		//正常に送られたけどデータはない
-		if (WSAGetLastError() == WSAEWOULDBLOCK) {
-			OutputDebugString("no Data\n");
-			return true;
-		}
-		//エラー
-		else {
-			OutputDebugString(WSAGetLastError() + " : Error\n");
-			return false;
-		}
-	}
-
-	// 成功時の処理
-	value->posX = ntohl(recvValue.posX);								// int バイトオーダー変換
-	value->posZ = ntohl(recvValue.posZ);								// int バイトオーダー変換
-	return true;
-}
-
-bool Send(int sock, DATA value)
-{
-	DATA sendValue;	// 送信データ ... ネットワークバイトオーダーに変換後の値を格納
-	sendValue.posX = htonl(value.posX);									// int バイトオーダー変換
-	sendValue.posZ = htonl(value.posZ);									// int バイトオーダー変換
-
-	int ret;		// 成否の判定用
-	// 送信
-	ret = send(sock, (char*)&sendValue, sizeof(sendValue), 0);
-	// 失敗
-	if (ret != sizeof(sendValue))
-	{
-		return false;
-	}
-
-	// 成功
-	return true;
 }
 
 int UdpClient::CreateSocket(std::string port)
@@ -69,7 +17,7 @@ int UdpClient::CreateSocket(std::string port)
 	if (sock < 0)
 	{
 		OutputDebugString(WSAGetLastError() + " : Error\n");
-		return 1;
+		return 0;
 	}
 
 	// 接続先サーバのソケットアドレス情報設定
@@ -83,7 +31,7 @@ int UdpClient::CreateSocket(std::string port)
 	if (connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) != 0)
 	{
 		OutputDebugString(WSAGetLastError() + " : Error\n");
-		return 1;
+		return 0;
 	}
 
 	// ソケットsockをノンブロッキングソケットにする
@@ -92,9 +40,11 @@ int UdpClient::CreateSocket(std::string port)
 
 	if (ret == SOCKET_ERROR)
 	{
-		// エラー処理
+		OutputDebugString(WSAGetLastError() + " : Error\n");
+		return 0;
 	}
 
+	return 1;
 }
 
 int UdpClient::Update()
@@ -105,12 +55,12 @@ int UdpClient::Update()
 
 	// 送信
 	if (!Send(sock, data)) {
-		return -1;
+		return 0;
 	}
 	
 	//受信
 	if (!Recv(sock, &data)) {
-		return -1;
+		return 0;
 	}
 
 	// 出力
@@ -120,5 +70,5 @@ int UdpClient::Update()
 	OutputDebugStringA(std::to_string(data.posZ).c_str());
 	OutputDebugString("\n");
 
-
+	return 1;
 }

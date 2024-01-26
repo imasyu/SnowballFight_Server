@@ -7,8 +7,6 @@
 using namespace std;
 
 namespace NetworkManager {
-	// 送受信するメッセージの最大値
-	const unsigned int MESSAGELENGTH = 1024;
 
 	Udp* socket_;
 

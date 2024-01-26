@@ -1,0 +1,27 @@
+#pragma once
+#include "Engine/GameObject.h"
+
+class Aim : public GameObject
+{
+    bool isMove_;                   //エイムを動かすかどうか
+    float perspectiveDistance_;     //どのくらい後ろから映すか
+    float mouseSensitivity;         //マウス感度
+    XMFLOAT3 cameraTarget_;         //カメラの焦点目標
+    XMFLOAT3 cameraPosition_;       //カメラの場所目標
+    XMFLOAT3 aimDirection_;         //現在の視点に基づいた進行方向ベクトル
+    class Player* pPlayer_;
+
+    void CalcAim();
+    void CalcMouseMove();
+    XMVECTOR CalcDirection(float x, float y);
+
+public:
+    Aim(GameObject* parent);
+    ~Aim();
+    void Initialize() override;
+    void Update() override;
+    void Draw() override;
+    void Release() override;
+
+};
+

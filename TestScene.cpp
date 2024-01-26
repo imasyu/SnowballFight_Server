@@ -29,19 +29,26 @@ TestScene::TestScene(GameObject * parent)
 //èâä˙âª
 void TestScene::Initialize()
 {
-	NetworkManager::Initialize();
-	NetworkManager::CreateSocket(NetworkManager::SOCKET_MODE::UDP_SERVER, SERVERPORT);
+	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;
+	
+	//NetworkManager::Initialize();
+	//NetworkManager::CreateSocket(mode, SERVERPORT);
+	
+	pPlayer1 = Instantiate<Player>(this);
+	pPlayer2 = Instantiate<Player>(this);
+	
+	if(mode == 0) pPlayer1->InitializeIsPlayer();
+	else  pPlayer2->InitializeIsPlayer();
 
 	pText = new Text();
 	pText->Initialize();
-
 
 }
 
 //çXêV
 void TestScene::Update()
 {
-	NetworkManager::Update();
+	//NetworkManager::Update();
 
 }
 
