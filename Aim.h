@@ -22,6 +22,7 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
+    void SetPlayer(class Player* p) { pPlayer_ = p; }
 
 };
 

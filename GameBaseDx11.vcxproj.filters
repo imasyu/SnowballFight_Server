@@ -119,6 +119,12 @@
     <ClCompile Include="Player.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Aim.cpp">
+      <Filter>03Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>03Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -206,6 +212,12 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
+      <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Aim.h">
+      <Filter>03Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
       <Filter>03Scene</Filter>
     </ClInclude>
   </ItemGroup>

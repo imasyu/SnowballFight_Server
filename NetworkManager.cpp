@@ -2,6 +2,7 @@
 #include <WS2tcpip.h>
 #include "UdpServer.h"
 #include "UdpClient.h"
+#include "Player.h"
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
@@ -9,8 +10,13 @@ using namespace std;
 namespace NetworkManager {
 
 	Udp* socket_;
+	Player* self_;
+	Player* other_;
 
-	int Initialize() {
+	int Initialize(class Player* self, class Player* other) {
+		self_ = self;
+		other_ = other;
+
 		// WinSockèâä˙âª
 		WSADATA wsaData;
 		int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -44,5 +50,7 @@ namespace NetworkManager {
 		return 1;
 	}
 
+	Player* GetSelfPlayer() { return self_; }
+	Player* GetOtherPlayer() { return other_; }
 
 }

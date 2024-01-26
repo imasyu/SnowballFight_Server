@@ -2,16 +2,19 @@
 #include <string>
 #include <WS2tcpip.h>
 
+const int MAGNFICATION = 10000;
+
 class Udp
 {
 protected:
 	struct DATA {
-		double posX;
-		double posZ;
+		u_long posX;	//”{—¦‚P–œ
+		u_long posZ;	//”{—¦‚P–œ
 	};
 
 	int ret;
 	SOCKET sock;
+	DATA data;
 
 public:
 	virtual int CreateSocket(std::string port) = 0;
@@ -21,4 +24,3 @@ public:
 	bool Send(int sock, DATA value);
 
 };
-

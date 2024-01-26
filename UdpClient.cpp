@@ -1,5 +1,7 @@
 #include "UdpClient.h"
 #include <WS2tcpip.h>
+#include "Player.h"
+#include "NetworkManager.h"
 
 namespace {
 	// ポート番号
@@ -50,8 +52,9 @@ int UdpClient::CreateSocket(std::string port)
 int UdpClient::Update()
 {
 	DATA data;
-	data.posX = 10.0f;
-	data.posZ = -5.0f;
+	XMFLOAT3 pos = NetworkManager::GetSelfPlayer()->GetPosition();
+	data.posX = (pos.x * MAGNFICATION);
+	data.posZ = (pos.z * MAGNFICATION);
 
 	// 送信
 	if (!Send(sock, data)) {
@@ -62,6 +65,9 @@ int UdpClient::Update()
 	if (!Recv(sock, &data)) {
 		return 0;
 	}
+
+	data.posX = data.posX / MAGNFICATION;
+	data.posZ = data.posZ / MAGNFICATION;
 
 	// 出力
 	OutputDebugString("X = ");

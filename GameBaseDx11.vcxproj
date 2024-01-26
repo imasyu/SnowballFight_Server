@@ -151,6 +151,7 @@
     <ClCompile Include="Engine\Transform.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="TestScene.cpp" />
     <ClCompile Include="Udp.cpp" />
     <ClCompile Include="UdpClient.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Engine\Transform.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Udp.h" />
     <ClInclude Include="UdpClient.h" />

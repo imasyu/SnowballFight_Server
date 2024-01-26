@@ -1,5 +1,7 @@
 #include "UdpServer.h"
 #include <WS2tcpip.h>
+#include "Player.h"
+#include "NetworkManager.h"
 
 namespace {
 	// ポート番号
@@ -70,6 +72,9 @@ int UdpServer::Update()
 	DATA data;
 	if(!Recv(sock, &data)) return -1;
 
+	data.posX = (data.posX * MAGNFICATION);
+	data.posZ = (data.posZ * MAGNFICATION);
+
 	// 出力
 	OutputDebugString("X = ");
 	OutputDebugStringA(std::to_string(data.posX).c_str());
@@ -78,8 +83,9 @@ int UdpServer::Update()
 	OutputDebugString("\n");
 
 	//送信
-	data.posX = 12345678.0f;
-	data.posZ = 0.0f;
+	XMFLOAT3 pos = NetworkManager::GetSelfPlayer()->GetPosition();
+	data.posX = (pos.x * MAGNFICATION);
+	data.posZ = (pos.z * MAGNFICATION);
 
 	// 送信
 	if (!Send(sock, data)) return -1;

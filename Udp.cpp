@@ -1,5 +1,4 @@
 #include "Udp.h"
-#include <WS2tcpip.h>
 
 bool Udp::Recv(int sock, DATA* value)
 {

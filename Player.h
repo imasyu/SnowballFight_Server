@@ -3,7 +3,7 @@
 
 class Player : public GameObject
 {
-    bool isPlayer_;
+    bool isPlayer_;     //‘€ì‚·‚éƒvƒŒƒCƒ„[‚©‚Ç‚¤‚©
     int hModel_;
     class Aim* pAim_;
 
@@ -17,6 +17,7 @@ public:
 
     //‘€ì‚·‚éPlayer‚Ì‰Šú‰»
     void InitializeIsPlayer();
+    bool IsPlayer() { return isPlayer_; }
 
 };
 

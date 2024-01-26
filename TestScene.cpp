@@ -5,40 +5,45 @@
 #include "Engine/Text.h"
 #include <string>
 #include "Player.h"
+#include "Stage.h"
 
 namespace {
-	const std::string SERVERPORT = "192.168.43.50";
+	const std::string SERVERPORT = "192.168.43.50";	//クライアントの時接続するサーバの数値を入れる
+	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;	//ここでサーバかクライアントを決める
 
 	Text* pText = nullptr;
 	int timeCount = 0;
-
-	Player* pPlayer1 = nullptr;
-	Player* pPlayer2 = nullptr;
-
 }
 
 //整数値を送ってみて正常化試す
-//それで正常ならそれを１０万倍してその桁を使用する
+//それで正常ならそれを１万倍とかしてその桁を使用する
 
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
-	: GameObject(parent, "TestScene")
+	: GameObject(parent, "TestScene"), pPlayerSelf_(nullptr), pPlayerOther_(nullptr)
 {
 }
 
 //初期化
 void TestScene::Initialize()
 {
-	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;
+	Instantiate<Stage>(this);
+	Player* p1 = Instantiate<Player>(this);
+	Player* p2 = Instantiate<Player>(this);
 	
-	//NetworkManager::Initialize();
+	if (mode == 0) {
+		p1->InitializeIsPlayer();
+		pPlayerSelf_ = p1;
+		pPlayerOther_ = p2;
+	}
+	else {
+		p2->InitializeIsPlayer();
+		pPlayerSelf_ = p2;
+		pPlayerOther_ = p1;
+	}
+
+	NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_);
 	//NetworkManager::CreateSocket(mode, SERVERPORT);
-	
-	pPlayer1 = Instantiate<Player>(this);
-	pPlayer2 = Instantiate<Player>(this);
-	
-	if(mode == 0) pPlayer1->InitializeIsPlayer();
-	else  pPlayer2->InitializeIsPlayer();
 
 	pText = new Text();
 	pText->Initialize();
@@ -56,6 +61,7 @@ void TestScene::Update()
 void TestScene::Draw()
 {
 	pText->Draw(30, 30, (timeCount / 60));
+	timeCount++;
 
 }
 

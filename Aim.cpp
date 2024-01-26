@@ -26,14 +26,14 @@ Aim::~Aim()
 
 void Aim::Initialize()
 {
-    pPlayer_ = static_cast<Player*>(FindObject("Player"));
-
     transform_.rotate_.y = 180.0f;
-    CalcAim();
+
 }
 
 void Aim::Update()
 {
+    if (Input::IsKeyDown(DIK_E)) isMove_ = !isMove_;
+
     if (isMove_) {
         CalcMouseMove();
     }

@@ -21,9 +21,9 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	if (isPlayer_) {
+	//‘€ìƒLƒƒƒ‰‚¶‚á‚È‚¢‚È‚ç“®‚©‚µ‚Ä‚İ‚é
+	if (!isPlayer_) {
 		transform_.position_.x += 0.01f;
-
 	}
 
 }
@@ -42,6 +42,7 @@ void Player::Release()
 void Player::InitializeIsPlayer()
 {
 	isPlayer_ = true;
-	if (isPlayer_) pAim_ = Instantiate<Aim>(this);
+	pAim_ = Instantiate<Aim>(this);
+	pAim_->SetPlayer(this);
 
 }
