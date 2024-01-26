@@ -25,6 +25,7 @@ void TestScene::Initialize()
 	NetworkManager::Initialize();
 	NetworkManager::CreateSocket(NetworkManager::SOCKET_MODE::UDP_SERVER, SERVERPORT);
 
+	pText = new Text();
 	pText->Initialize();
 
 }

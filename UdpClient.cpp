@@ -48,11 +48,10 @@ int UdpClient::CreateSocket(std::string port)
 int UdpClient::Update()
 {
 	char buff[MESSAGELENGTH];	// 送受信メッセージの格納領域
-	buff[0] = 'a';
+	buff[0] = 'b';
 
 	// 送信
 	ret = send(sock, buff, (int)strlen(buff), 0);
-
 	if (ret != strlen(buff))
 	{
 		OutputDebugString(WSAGetLastError() + " : Error\n");

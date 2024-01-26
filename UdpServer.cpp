@@ -65,22 +65,32 @@ int UdpServer::CreateSocket(std::string port)
 int UdpServer::Update()
 {
 	char buff[MESSAGELENGTH];	// 送受信メッセージの格納領域
+
 	// クライアントからのメッセージ受信
 	ret = recv(sock, buff, sizeof(buff) - 1, 0);
-	if (ret < 0)
+	
+	//受信データなし
+	if (ret != 0)
 	{
-		// ぬける
-		return -1;
+		int errorCode = WSAGetLastError();
+		
+		// 受信データがない状況の時はエラー処理は行わない
+		if (errorCode != WSAEWOULDBLOCK)
+		{
+			// エラー
+			return -1;
+		}
 	}
 
-	buff[0] = 'a';
-
-	// 終端記号の追加
-	buff[ret] = '\0';
-
 	// 出力
+	buff[ret] = '\0';
 	OutputDebugString(buff);
 	OutputDebugString("\n");
+
+	//-----------------------------送信----------------------------
+	
+	// 送信データ入力
+	buff[0] = 'a';
 
 	// 送信
 	ret = send(sock, buff, strlen(buff), 0);

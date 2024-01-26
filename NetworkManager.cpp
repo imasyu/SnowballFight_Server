@@ -44,6 +44,7 @@ namespace NetworkManager {
 	int Update()
 	{
 		socket_->Update();
+
 		return 1;
 	}
 
