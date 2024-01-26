@@ -24,7 +24,16 @@ bool Recv(int sock, DATA* value)
 	// 失敗
 	if (ret != sizeof(recvValue))
 	{
-		return false;
+		//正常に送られたけどデータはない
+		if (WSAGetLastError() == WSAEWOULDBLOCK) {
+			OutputDebugString("no Data\n");
+			return true;
+		}
+		//エラー
+		else {
+			OutputDebugString(WSAGetLastError() + " : Error\n");
+			return false;
+		}
 	}
 
 	// 成功時の処理
@@ -109,20 +118,23 @@ int UdpServer::CreateSocket(std::string port)
 
 int UdpServer::Update()
 {
+	//受信
 	DATA data;
 	Recv(sock, &data);
 
 	// 出力
+	OutputDebugString("X = ");
+	OutputDebugStringA(std::to_string(data.posX).c_str());
+	OutputDebugString(" : Y = ");
 	OutputDebugStringA(std::to_string(data.posX).c_str());
 	OutputDebugString("\n");
 
-	//-----------------------------送信----------------------------
-	
+	//送信
+	data.posX = 10.0f;
+	data.posZ = -5.0f;
+
 	// 送信
-	ret = send(sock, buff, strlen(buff), 0);
-	if (ret != strlen(buff))
-	{
-		// ぬける
+	if (!Send(sock, data)) {
 		return -1;
 	}
 
