@@ -13,9 +13,11 @@ namespace {
 
 int UdpServer::CreateSocket(std::string port)
 {
+	port_ = port;
+	
 	// リスンソケットの作成
-	sock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-	if (sock <= 0)
+	sock_ = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock_ == INVALID_SOCKET)
 	{
 		OutputDebugString("リスンソケット作成失敗\n");
 		return 0;
@@ -29,37 +31,20 @@ int UdpServer::CreateSocket(std::string port)
 	bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// ソケットアドレス情報設定	※固定のポート番号設定
-	if (bind(sock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
+	if (bind(sock_, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
 	{
-		OutputDebugString("ソケットアドレスの設定\n");
-		return 0;
-	}
-
-	// リスン状態に設定	キューのサイズ:1
-	if (listen(sock, 1) != 0)
-	{
-		OutputDebugString("リスン状態にするの失敗\n");
-		return 0;
-	}
-
-	struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
-	int addrlen = sizeof(clientAddr);	// clientAddrのサイズ
-
-	// クライアントからのconnect()を受けて、コネクション確立済みのソケット作成
-	sock = accept(sock, (struct sockaddr*)&clientAddr, &addrlen);
-	if (sock < 0)
-	{
-		OutputDebugString("コネクション確立失敗\n");
+		OutputDebugString("ソケットアドレスの設定エラー\n");
+		closesocket(sock_);  // ソケットを閉じる
 		return 0;
 	}
 
 	// ソケットsockをノンブロッキングソケットにする
 	unsigned long cmdarg = 0x01;
-	int ret = ioctlsocket(sock, FIONBIO, &cmdarg);
-
+	int ret = ioctlsocket(sock_, FIONBIO, &cmdarg);
 	if (ret == SOCKET_ERROR)
 	{
-		OutputDebugString("ブロッキングソケット化失敗\n");
+		OutputDebugString("ノンブロッキングソケット化失敗\n");
+		closesocket(sock_);  // ソケットを閉じる
 		return 0;
 	}
 
@@ -70,25 +55,27 @@ int UdpServer::Update()
 {
 	//受信
 	DATA data;
-	if(!Recv(sock, &data)) return -1;
-
-	data.posX = (data.posX * MAGNFICATION);
-	data.posZ = (data.posZ * MAGNFICATION);
-
-	// 出力
-	OutputDebugString("X = ");
-	OutputDebugStringA(std::to_string(data.posX).c_str());
-	OutputDebugString(" : Y = ");
-	OutputDebugStringA(std::to_string(data.posZ).c_str());
-	OutputDebugString("\n");
+	if (Recv(sock_, &data)) {
+		data.posX = (data.posX / MAGNFICATION);
+		data.posZ = (data.posZ / MAGNFICATION);
+		data.rotateY = (data.rotateY / MAGNFICATION);
+		OutputDebugString(("X = " + std::to_string(data.posX) + " : Y = " + std::to_string(data.posZ) + "\n").c_str());
+	}
+	else {
+		OutputDebugString("受信エラー\n");
+		return 0;
+	}
 
 	//送信
 	XMFLOAT3 pos = NetworkManager::GetSelfPlayer()->GetPosition();
 	data.posX = (pos.x * MAGNFICATION);
 	data.posZ = (pos.z * MAGNFICATION);
+	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
 
-	// 送信
-	if (!Send(sock, data)) return -1;
+	if (!Send(sock_, data)) {
+		OutputDebugString("送信エラー\n");
+		return 0;
+	}
 
 	return 1;
 }

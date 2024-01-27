@@ -15,9 +15,6 @@ namespace {
 	int timeCount = 0;
 }
 
-//整数値を送ってみて正常化試す
-//それで正常ならそれを１万倍とかしてその桁を使用する
-
 //コンストラクタ
 TestScene::TestScene(GameObject * parent)
 	: GameObject(parent, "TestScene"), pPlayerSelf_(nullptr), pPlayerOther_(nullptr)
@@ -42,8 +39,8 @@ void TestScene::Initialize()
 		pPlayerOther_ = p1;
 	}
 
-	NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_);
-	//NetworkManager::CreateSocket(mode, SERVERPORT);
+	if(NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_) == 0) PostQuitMessage(0);
+	if(NetworkManager::CreateSocket(mode, SERVERPORT) == 0) PostQuitMessage(0);
 
 	pText = new Text();
 	pText->Initialize();
@@ -53,7 +50,7 @@ void TestScene::Initialize()
 //更新
 void TestScene::Update()
 {
-	//NetworkManager::Update();
+	NetworkManager::Update();
 
 }
 

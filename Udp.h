@@ -2,7 +2,7 @@
 #include <string>
 #include <WS2tcpip.h>
 
-const int MAGNFICATION = 10000;
+static const u_long MAGNFICATION = 10000;
 
 class Udp
 {
@@ -10,17 +10,18 @@ protected:
 	struct DATA {
 		u_long posX;	//”{—¦‚P–œ
 		u_long posZ;	//”{—¦‚P–œ
+		u_long rotateY;	//
 	};
 
-	int ret;
-	SOCKET sock;
-	DATA data;
+	int ret_;
+	SOCKET sock_;
+	DATA data_;
+	std::string port_;
 
 public:
 	virtual int CreateSocket(std::string port) = 0;
 	virtual int Update() = 0;
-
-	bool Recv(int sock, DATA* value);
-	bool Send(int sock, DATA value);
-
+	
+	bool Send(SOCKET sock, DATA value);
+	bool Recv(SOCKET sock, DATA* value);
 };

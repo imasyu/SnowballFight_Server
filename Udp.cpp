@@ -1,48 +1,64 @@
 #include "Udp.h"
 
-bool Udp::Recv(int sock, DATA* value)
+namespace {
+	// ポート番号
+	const unsigned short SERVERPORT = 10000;
+
+	// 送受信するメッセージの最大値
+	const unsigned int MESSAGELENGTH = 1024;
+
+}
+
+bool Udp::Send(SOCKET sock, DATA value)
+{
+	//送信データ:ネットワークバイトオーダーに変換後の値を格納
+	DATA sendValue;
+
+	//バイトオーダー変換
+	sendValue.posX = htonl(value.posX);
+	sendValue.posZ = htonl(value.posZ);
+	sendValue.rotateY = htonl(value.rotateY);
+
+	SOCKADDR_IN toAddr;	// 宛先のソケットアドレス情報
+	memset(&toAddr, 0, sizeof(toAddr));
+	toAddr.sin_family = AF_INET;				// IPv4アドレス
+	toAddr.sin_port = htons(SERVERPORT);		// サーバのポート番号
+	inet_pton(AF_INET, port_.c_str(), &toAddr.sin_addr.s_addr);		// サーバのIPアドレス
+	int ret = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&toAddr, sizeof(toAddr));
+	if (ret != sizeof(sendValue))
+	{
+		OutputDebugString("送れなかった\n");
+		return false;
+	}
+
+	return true;
+}
+
+bool Udp::Recv(SOCKET sock, DATA* value)
 {
 	DATA recvValue;	// 受信データの格納領域...ネットワークバイトオーダー状態
-	int ret;		// 成否の判定用
 
-	// 受信
-	ret = recv(sock, (char*)&recvValue, sizeof(recvValue), 0);
-	// 失敗
+	SOCKADDR_IN fromAddr;	// 送信元ソケットアドレス情報を格納する領域
+	int fromlen = sizeof(fromAddr);
+	int ret = recvfrom(sock, (char*)&recvValue, sizeof(recvValue), 0, (SOCKADDR*)&fromAddr, &fromlen);
 	if (ret != sizeof(recvValue))
 	{
-		//正常に送られたけどデータはない
+		// 正常に送られたけどデータはない
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			OutputDebugString("no Data\n");
 			return true;
 		}
-		//エラー
+		// エラー
 		else {
-			OutputDebugString(WSAGetLastError() + " : Error\n");
+			OutputDebugString("Update Error\n");
 			return false;
 		}
 	}
 
 	// 成功時の処理
-	value->posX = ntohl(recvValue.posX);								// int バイトオーダー変換
-	value->posZ = ntohl(recvValue.posZ);								// int バイトオーダー変換
-	return true;
-}
-
-bool Udp::Send(int sock, DATA value)
-{
-	DATA sendValue;	// 送信データ ... ネットワークバイトオーダーに変換後の値を格納
-	sendValue.posX = htonl(value.posX);									// int バイトオーダー変換
-	sendValue.posZ = htonl(value.posZ);									// int バイトオーダー変換
-
-	int ret;		// 成否の判定用
-	// 送信
-	ret = send(sock, (char*)&sendValue, sizeof(sendValue), 0);
-	// 失敗
-	if (ret != sizeof(sendValue))
-	{
-		return false;
-	}
-
-	// 成功
-	return true;
+	value->posX = ntohl(recvValue.posX);
+	value->posZ = ntohl(recvValue.posZ);
+	value->rotateY = ntohl(recvValue.rotateY);
+	
+	return 1;
 }

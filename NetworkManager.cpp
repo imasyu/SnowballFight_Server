@@ -23,7 +23,7 @@ namespace NetworkManager {
 		if (ret != 0)
 		{
 			OutputDebugString("Winsock‰Šú‰»¸”s\n");
-			return -1;
+			return 0;
 		}
 
 		return 1;

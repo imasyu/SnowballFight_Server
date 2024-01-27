@@ -26,7 +26,7 @@ Aim::~Aim()
 
 void Aim::Initialize()
 {
-    transform_.rotate_.y = 180.0f;
+    transform_.rotate_.y = 360.0f;
 
 }
 
@@ -72,6 +72,11 @@ void Aim::CalcMouseMove()
     XMFLOAT3 mouseMove = Input::GetMouseMove(); //マウスの移動量を取得
     transform_.rotate_.y += (mouseMove.x * MOUSE_SPEED) * mouseSensitivity; //横方向の回転
     transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //縦方向の回転
+
+    //マイナスにならないように抑制
+    if (transform_.rotate_.y <= 0.0f) transform_.rotate_.y = 360.0f;
+
+    //抑制
     if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
     if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;
 }
