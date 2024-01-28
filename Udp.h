@@ -22,6 +22,7 @@ public:
 	virtual int CreateSocket(std::string port) = 0;
 	virtual int Update() = 0;
 	
-	bool Send(SOCKET sock, DATA value);
-	bool Recv(SOCKET sock, DATA* value);
+	virtual bool Recv(SOCKET sock, DATA* value) = 0;
+	virtual bool Send(SOCKET sock, DATA value) = 0;
+
 };

@@ -29,9 +29,10 @@ int UdpServer::CreateSocket(std::string port)
 	bindAddr.sin_family = AF_INET;
 	bindAddr.sin_port = htons(SERVERPORT);
 	bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	// ソケットアドレス情報設定	※固定のポート番号設定
-	if (bind(sock_, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
+	
+	//ソケットアドレス情報設定	※固定のポート番号設定
+	ret_ = bind(sock_, (SOCKADDR*)&bindAddr, sizeof(bindAddr));
+	if (ret_ == SOCKET_ERROR)
 	{
 		OutputDebugString("ソケットアドレスの設定エラー\n");
 		closesocket(sock_);  // ソケットを閉じる
@@ -78,4 +79,57 @@ int UdpServer::Update()
 	}
 
 	return 1;
+}
+
+bool UdpServer::Recv(SOCKET sock, DATA* value)
+{
+	DATA recvValue;	// 受信データの格納領域...ネットワークバイトオーダー状態
+
+	int fromlen = sizeof(fromAddr);
+	int ret = recvfrom(sock, (char*)&recvValue, sizeof(recvValue), 0, (SOCKADDR*)&fromAddr, &fromlen);
+	if (ret != sizeof(recvValue))
+	{
+		// 正常に送られたけどデータはない
+		if (WSAGetLastError() == WSAEWOULDBLOCK) {
+			OutputDebugString("no Data\n");
+			return true;
+		}
+		// エラー
+		else {
+			OutputDebugString("Update Error\n");
+			return false;
+		}
+	}
+
+	// 成功時の処理
+	value->posX = ntohl(recvValue.posX);
+	value->posZ = ntohl(recvValue.posZ);
+	value->rotateY = ntohl(recvValue.rotateY);
+
+	return 1;
+}
+
+bool UdpServer::Send(SOCKET sock, DATA value)
+{
+	//送信データ:ネットワークバイトオーダーに変換後の値を格納
+	DATA sendValue;
+
+	//バイトオーダー変換
+	sendValue.posX = htonl(value.posX);
+	sendValue.posZ = htonl(value.posZ);
+	sendValue.rotateY = htonl(value.rotateY);
+
+	//inet_pton(AF_INET, port_.c_str(), &toAddr.sin_addr.s_addr);		// サーバのIPアドレス
+
+	int fromlen = sizeof(fromAddr);
+	//int ret = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, sizeof(toAddr));
+
+	ret_ = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, fromlen);
+	if (ret_ != sizeof(sendValue))
+	{
+		OutputDebugString("送れなかった\n");
+		return false;
+	}
+
+	return true;
 }
