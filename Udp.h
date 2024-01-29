@@ -2,7 +2,7 @@
 #include <string>
 #include <WS2tcpip.h>
 
-static const u_long MAGNFICATION = 10000;
+static const u_long MAGNFICATION = 1000;
 
 class Udp
 {

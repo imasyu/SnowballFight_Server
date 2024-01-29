@@ -57,14 +57,12 @@ int UdpServer::Update()
 	//受信
 	DATA data;
 	if (Recv(sock_, &data)) {
-		data.posX = (data.posX / MAGNFICATION);
-		data.posZ = (data.posZ / MAGNFICATION);
-		data.rotateY = (data.rotateY / MAGNFICATION);
-		OutputDebugString(("X = " + std::to_string(data.posX) + " : Y = " + std::to_string(data.posZ) + "\n").c_str());
+		//受信できた
+		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
+		OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
 
 		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(data.posX, 0.0f, data.posZ));
-		NetworkManager::GetOtherPlayer()->SetRotateY(data.rotateY);
-
+		NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
 	}
 	else {
 		OutputDebugString("受信エラー\n");
