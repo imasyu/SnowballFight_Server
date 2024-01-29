@@ -23,6 +23,7 @@ public:
     void Draw() override;
     void Release() override;
     void SetPlayer(class Player* p) { pPlayer_ = p; }
+    XMFLOAT3 GetAimDirection() { return aimDirection_; }
 
 };
 

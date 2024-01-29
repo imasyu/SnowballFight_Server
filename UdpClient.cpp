@@ -65,6 +65,9 @@ int UdpClient::Update()
 	data.rotateY = data.rotateY / MAGNFICATION;
 	OutputDebugString(("X = " + std::to_string(data.posX) + " : Y = " + std::to_string(data.posZ) + "\n").c_str());
 
+	NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(data.posX, 0.0f, data.posZ));
+	NetworkManager::GetOtherPlayer()->SetRotateY(data.rotateY);
+
 	return 1;
 }
 

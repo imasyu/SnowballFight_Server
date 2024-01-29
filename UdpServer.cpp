@@ -61,6 +61,10 @@ int UdpServer::Update()
 		data.posZ = (data.posZ / MAGNFICATION);
 		data.rotateY = (data.rotateY / MAGNFICATION);
 		OutputDebugString(("X = " + std::to_string(data.posX) + " : Y = " + std::to_string(data.posZ) + "\n").c_str());
+
+		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(data.posX, 0.0f, data.posZ));
+		NetworkManager::GetOtherPlayer()->SetRotateY(data.rotateY);
+
 	}
 	else {
 		OutputDebugString("受信エラー\n");
@@ -119,11 +123,7 @@ bool UdpServer::Send(SOCKET sock, DATA value)
 	sendValue.posZ = htonl(value.posZ);
 	sendValue.rotateY = htonl(value.rotateY);
 
-	//inet_pton(AF_INET, port_.c_str(), &toAddr.sin_addr.s_addr);		// サーバのIPアドレス
-
 	int fromlen = sizeof(fromAddr);
-	//int ret = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, sizeof(toAddr));
-
 	ret_ = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, fromlen);
 	if (ret_ != sizeof(sendValue))
 	{

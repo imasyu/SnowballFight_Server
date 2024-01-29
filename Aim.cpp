@@ -36,6 +36,7 @@ void Aim::Update()
 
     if (isMove_) {
         CalcMouseMove();
+        pPlayer_->SetRotateY(transform_.rotate_.y - 180.0f);
     }
 
     CalcAim();
