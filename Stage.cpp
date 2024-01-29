@@ -13,7 +13,7 @@ Stage::~Stage()
 void Stage::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Stage.fbx");
+	hModel_ = Model::Load("iceGround.fbx");
 	assert(hModel_ >= 0);
 
 }
