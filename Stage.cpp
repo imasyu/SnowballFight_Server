@@ -13,13 +13,13 @@ Stage::~Stage()
 void Stage::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Stage.fbx");
+	hModel_ = Model::Load("SnowBallFight_SkyBox.fbx");
 	assert(hModel_ >= 0);
-
 }
 
 void Stage::Update()
 {
+	transform_.rotate_.y += 0.5f;
 }
 
 void Stage::Draw()
