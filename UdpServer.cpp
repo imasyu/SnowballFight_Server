@@ -61,7 +61,7 @@ int UdpServer::Update()
 		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
 		OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
 
-		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(data.posX, 0.0f, data.posZ));
+		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 		NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
 	}
 	else {
