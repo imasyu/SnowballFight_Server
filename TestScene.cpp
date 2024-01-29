@@ -8,8 +8,13 @@
 #include "Stage.h"
 
 namespace {
-	const std::string SERVERPORT = "192.168.42.98";	//クライアントの時接続するサーバの数値を入れる
-	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;	//ここでサーバかクライアントを決める
+	const std::string SERVERPORT = "192.168.43.66";	//クライアントの時接続するサーバの数値を入れる
+
+#if 1
+	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;
+#else
+	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_CLIENT;
+#endif
 
 	Text* pText = nullptr;
 	int timeCount = 0;
