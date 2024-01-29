@@ -2,7 +2,7 @@
 #include "Engine/Model.h"
 
 Stage::Stage(GameObject* parent)
-	: GameObject(parent, "Stage"), hModel_(-1)
+	: GameObject(parent, "Stage"), hModel_{-1,-1}
 {
 }
 
@@ -12,21 +12,26 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	//モデルデータのロード
-	hModel_ = Model::Load("SnowBallFight_SkyBox.fbx");
-	assert(hModel_ >= 0);
+	// スカイボックス読み込み
+	hModel_[0] = Model::Load("SnowBallFight_SkyBox.fbx");
+	assert(hModel_[0] >= 0);
+
+	// 地面読み込み
+	hModel_[1] = Model::Load("iceGround.fbx");
+	assert(hModel_[1] >= 0);
 }
 
 void Stage::Update()
 {
-	transform_.rotate_.y += 0.5f;
 }
 
 void Stage::Draw()
 {
-	Model::SetTransform(hModel_, transform_);
-	Model::Draw(hModel_);
-
+	for (int i = 0; i < 2; i++)
+	{
+		Model::SetTransform(hModel_[i], transform_);
+		Model::Draw(hModel_[i]);
+	}
 }
 
 void Stage::Release()

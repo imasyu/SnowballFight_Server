@@ -3,7 +3,7 @@
 
 class Stage : public GameObject
 {
-    int hModel_;
+    int hModel_[2];
 
 public:
     Stage(GameObject* parent);
