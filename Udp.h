@@ -20,9 +20,10 @@ protected:
 	std::string port_;
 
 public:
-	virtual int CreateSocket(std::string port) = 0;
-	virtual int Update() = 0;
-	
+	virtual bool CreateSocket(std::string port) = 0;
+	virtual bool Update() = 0;
+	bool Exit();
+
 	virtual bool Recv(SOCKET sock, DATA* value) = 0;
 	virtual bool Send(SOCKET sock, DATA value) = 0;
 

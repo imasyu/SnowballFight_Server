@@ -31,28 +31,31 @@ void SnowBall::Update()
 		transform_.scale_.x += 0.03f;
 		transform_.scale_.y += 0.03f;
 		transform_.scale_.z += 0.03f;
+
+		transform_.position_.x += velocity_.x;
+		transform_.position_.y += velocity_.y;
+		transform_.position_.z += velocity_.z;
+
+		RayCastData data;
+		data.start = transform_.position_;   //レイの発射位置
+		data.start.y = 0;
+		data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+		Model::RayCast(hGroundModel_, &data); //レイを発射
+
+		//レイが当たったら
+		if (data.hit)
+		{
+			//その分位置を下げる
+			transform_.position_.y = -data.dist;
+			transform_.position_.y += transform_.scale_.x * 0.7f;
+		}
+		else {
+			transform_.position_.y -= 0.05f;
+		}
+
+		if (transform_.position_.y <= -10.0f) KillMe();
 	}
 
-	transform_.position_.x += velocity_.x;
-	transform_.position_.y += velocity_.y;
-	transform_.position_.z += velocity_.z;
-
-	RayCastData data;
-	data.start = transform_.position_;   //レイの発射位置
-	data.start.y = 0;
-	data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-	Model::RayCast(hGroundModel_, &data); //レイを発射
-
-	//レイが当たったら
-	if (data.hit)
-	{
-		//その分位置を下げる
-		transform_.position_.y = -data.dist;
-		transform_.position_.y += transform_.scale_.x * 0.7f;
-	}
-	else {
-		KillMe();
-	}
 }
 
 void SnowBall::Draw()

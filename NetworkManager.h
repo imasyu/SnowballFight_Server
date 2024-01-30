@@ -10,10 +10,11 @@ namespace NetworkManager {
 	};
 
 	//‰Šú‰»ˆ—
-	int Initialize(Player* self, Player* other);
-	int CreateSocket(SOCKET_MODE mode, std::string port);
-	int Update();
-
+	bool Initialize(Player* self, Player* other);
+	bool CreateSocket(SOCKET_MODE mode, std::string port);
+	bool Update();
+	bool Exit();
+	
 	Player* GetSelfPlayer();
 	Player* GetOtherPlayer();
 

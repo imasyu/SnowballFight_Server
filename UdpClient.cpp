@@ -13,7 +13,7 @@ namespace {
 
 }
 
-int UdpClient::CreateSocket(std::string port)
+bool UdpClient::CreateSocket(std::string port)
 {
 	port_ = port;
 
@@ -24,7 +24,7 @@ int UdpClient::CreateSocket(std::string port)
 	{
 		OutputDebugString(WSAGetLastError() + " : Error\n");
 		closesocket(sock_);
-		return 0;
+		return false;
 	}
 
 	// ソケットsockをノンブロッキングソケットにする
@@ -35,13 +35,13 @@ int UdpClient::CreateSocket(std::string port)
 	{
 		OutputDebugString(WSAGetLastError() + " : Error\n");
 		closesocket(sock_);
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
-int UdpClient::Update()
+bool UdpClient::Update()
 {
 	DATA data;
 	XMFLOAT3 pos = NetworkManager::GetSelfPlayer()->GetPosition();
@@ -53,25 +53,29 @@ int UdpClient::Update()
 	// 送信
 	if (!Send(sock_, data)) {
 		OutputDebugString("送信エラー\n");
-		return 0;
+		return false;
 	}
+
+	DATA rData;
 
 	//受信
-	if (!Recv(sock_, &data)) {
+	if (!Recv(sock_, &rData)) {
 		OutputDebugString("受信エラー\n");
-		return 0;
+		return false;
 	}
 
-	pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
+	if (rData.shot == 0 || rData.shot == 1) {
+		pos = { (float)rData.posX / (float)MAGNFICATION, 0.0f, (float)rData.posZ / (float)MAGNFICATION };
 
-	//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
-	//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
+		//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+		//OutputDebugString((std::to_string(rData.shot) + "\n").c_str());
 
-	NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
-	NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
-	if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
-
-	return 1;
+		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
+		NetworkManager::GetOtherPlayer()->SetRotateY((float)rData.rotateY / (float)MAGNFICATION);
+		if (rData.shot) NetworkManager::GetOtherPlayer()->Shot();
+	}
+	
+	return true;
 }
 
 bool UdpClient::Recv(SOCKET sock, DATA* value)
@@ -101,7 +105,7 @@ bool UdpClient::Recv(SOCKET sock, DATA* value)
 	value->rotateY = ntohl(recvValue.rotateY);
 	value->shot = ntohs(recvValue.shot);
 
-	return 1;
+	return true;
 }
 
 bool UdpClient::Send(SOCKET sock, DATA value)

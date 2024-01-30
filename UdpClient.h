@@ -5,8 +5,8 @@
 class UdpClient : public Udp
 {
 public:
-	int CreateSocket(std::string port) override;
-	int Update() override;
+	bool CreateSocket(std::string port) override;
+	bool Update() override;
 
 	bool Recv(SOCKET sock, DATA* value) override;
 	bool Send(SOCKET sock, DATA value) override;

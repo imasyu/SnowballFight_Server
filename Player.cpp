@@ -44,36 +44,33 @@ void Player::Update()
 {
     lastPosition_ = transform_.position_;
 
-	//操作キャラじゃないなら動かしてみる
-    if (!isPlayer_) {
-        RayCastStage();
-        return;
-    };
-	
-    XMFLOAT3 fMove = { 0,0,0 };
-    XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-    if (Input::IsKey(DIK_W)) {
-        fMove.x += aimDirection.x;
-        fMove.z += aimDirection.z;
-    }
-    if (Input::IsKey(DIK_A)) {
-        fMove.x -= aimDirection.z;
-        fMove.z += aimDirection.x;
-    }
-    if (Input::IsKey(DIK_S)) {
-        fMove.x -= aimDirection.x;
-        fMove.z -= aimDirection.z;
-    }
-    if (Input::IsKey(DIK_D)) {
-        fMove.x += aimDirection.z;
-        fMove.z -= aimDirection.x;
-    }
+    //移動
+    if (isPlayer_) {
+        XMFLOAT3 fMove = { 0,0,0 };
+        XMFLOAT3 aimDirection = pAim_->GetAimDirection();
+        if (Input::IsKey(DIK_W)) {
+            fMove.x += aimDirection.x;
+            fMove.z += aimDirection.z;
+        }
+        if (Input::IsKey(DIK_A)) {
+            fMove.x -= aimDirection.z;
+            fMove.z += aimDirection.x;
+        }
+        if (Input::IsKey(DIK_S)) {
+            fMove.x -= aimDirection.x;
+            fMove.z -= aimDirection.z;
+        }
+        if (Input::IsKey(DIK_D)) {
+            fMove.x += aimDirection.z;
+            fMove.z -= aimDirection.x;
+        }
 
-    XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-    XMVECTOR vMove = XMLoadFloat3(&fMove);
-    vMove = XMVector3Normalize(vMove);
-    vMove *= 0.1f;
-    XMStoreFloat3(&transform_.position_, vPos + vMove);
+        XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+        XMVECTOR vMove = XMLoadFloat3(&fMove);
+        vMove = XMVector3Normalize(vMove);
+        vMove *= 0.1f;
+        XMStoreFloat3(&transform_.position_, vPos + vMove);
+    }
 
     XMFLOAT3 diff;
     diff.x = transform_.position_.x - lastPosition_.x;
@@ -83,7 +80,7 @@ void Player::Update()
     accumulatedDistance_ += distanceMoved;
 
     //スケールの上限
-    if (pSnowBall_ && isPlayer_) {
+    if (pSnowBall_) {
         float scaleCoefficient = 0.1f; // スケールの増加率を調整する係数
         float maxScale = 2.0;
         float newScale = 0.1f + scaleCoefficient * accumulatedDistance_;
@@ -96,17 +93,19 @@ void Player::Update()
         pSnowBall_->SetScale(newScale);
 
         //ポジションのセット
-        vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
+        XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+        XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
         XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
         vMove = XMVector3TransformCoord(vMove, mRotY);
-        vMove += newScale / maxScale * vMove;
+        vMove += (newScale / maxScale) * vMove;
         XMFLOAT3 vec = XMFLOAT3();
         XMStoreFloat3(&vec, vPos + vMove);
+        vec.y += pSnowBall_->GetScale().x * 0.7f;
         pSnowBall_->SetPosition(vec);
 
     }
 
-    if (Input::IsKeyDown(DIK_SPACE)) {
+    if (isPlayer_ && Input::IsKeyDown(DIK_SPACE)) {
         Shot();
     }
     

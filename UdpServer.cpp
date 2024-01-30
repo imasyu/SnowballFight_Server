@@ -12,7 +12,7 @@ namespace {
 
 }
 
-int UdpServer::CreateSocket(std::string port)
+bool UdpServer::CreateSocket(std::string port)
 {
 	port_ = port;
 
@@ -21,7 +21,7 @@ int UdpServer::CreateSocket(std::string port)
 	if (sock_ == INVALID_SOCKET)
 	{
 		OutputDebugString("リスンソケット作成失敗\n");
-		return 0;
+		return false;
 	}
 
 	// bind
@@ -37,7 +37,7 @@ int UdpServer::CreateSocket(std::string port)
 	{
 		OutputDebugString("ソケットアドレスの設定エラー\n");
 		closesocket(sock_);  // ソケットを閉じる
-		return 0;
+		return false;
 	}
 
 	// ソケットsockをノンブロッキングソケットにする
@@ -47,13 +47,13 @@ int UdpServer::CreateSocket(std::string port)
 	{
 		OutputDebugString("ノンブロッキングソケット化失敗\n");
 		closesocket(sock_);  // ソケットを閉じる
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
-int UdpServer::Update()
+bool UdpServer::Update()
 {
 	//受信
 	DATA data;
@@ -63,14 +63,16 @@ int UdpServer::Update()
 		//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
 		//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
-		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
-		NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
-		if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
+		if (data.shot == 0 || data.shot == 1) {
+			NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
+			NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
+			if (Input::IsKeyDown(DIK_SPACE)) NetworkManager::GetOtherPlayer()->Shot();
+		}
 
 	}
 	else {
 		OutputDebugString("受信エラー\n");
-		return 0;
+		return false;
 	}
 
 	//送信
@@ -82,10 +84,10 @@ int UdpServer::Update()
 
 	if (!Send(sock_, data)) {
 		OutputDebugString("送信エラー\n");
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 bool UdpServer::Recv(SOCKET sock, DATA* value)

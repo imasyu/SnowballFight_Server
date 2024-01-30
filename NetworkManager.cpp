@@ -13,7 +13,7 @@ namespace NetworkManager {
 	Player* self_;
 	Player* other_;
 
-	int Initialize(class Player* self, class Player* other) {
+	bool Initialize(class Player* self, class Player* other) {
 		self_ = self;
 		other_ = other;
 
@@ -23,31 +23,35 @@ namespace NetworkManager {
 		if (ret != 0)
 		{
 			OutputDebugString("Winsock‰Šú‰»Ž¸”s\n");
-			return 0;
+			return false;
 		}
 
-		return 1;
+		return true;
 	}
 
-	int CreateSocket(SOCKET_MODE mode, std::string port)
+	bool CreateSocket(SOCKET_MODE mode, std::string port)
 	{
 		if (mode == SOCKET_MODE::UDP_SERVER) {
 			socket_ = new UdpServer;
-			socket_->CreateSocket(port);
+			return socket_->CreateSocket(port);
 		}
 		if (mode == SOCKET_MODE::UDP_CLIENT) {
 			socket_ = new UdpClient;
-			socket_->CreateSocket(port);
+			return socket_->CreateSocket(port);
 		}
 		
-		return 1;
+		return true;
 	}
 
-	int Update()
+	bool Update()
 	{
-		socket_->Update();
+		if(socket_) return socket_->Update();
+		return false;
+	}
 
-		return 1;
+	bool Exit()
+	{
+		return socket_->Exit();
 	}
 
 	Player* GetSelfPlayer() { return self_; }
