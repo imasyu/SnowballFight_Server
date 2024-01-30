@@ -12,6 +12,6 @@ public:
     void Update() override;
     void Draw() override;
     void Release() override;
-    int GetModelHandle() { return hModel_; }
+    int GetModelHandle() { return hModel_[1]; }
 };
 
