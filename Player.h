@@ -18,6 +18,9 @@ public:
     //‘€ì‚·‚éPlayer‚Ì‰Šú‰»
     void InitializeIsPlayer();
     bool IsPlayer() { return isPlayer_; }
+    
+    //á‹Ê”­Ë
+    void Shot();
 
 };
 

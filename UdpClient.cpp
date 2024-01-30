@@ -48,7 +48,7 @@ int UdpClient::Update()
 	data.posX = (pos.x * MAGNFICATION);
 	data.posZ = (pos.z * MAGNFICATION);
 	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
-	data.shot = Input::IsKey(DIK_SPACE);
+	data.shot = Input::IsKeyDown(DIK_SPACE);
 
 	// ‘—M
 	if (!Send(sock_, data)) {
@@ -65,11 +65,11 @@ int UdpClient::Update()
 	pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
 	
 	//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
-	OutputDebugString( std::to_string(data.shot).c_str());
-	OutputDebugString("\n");
+	//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
 	NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 	NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
+	if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
 
 	return 1;
 }
