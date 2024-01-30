@@ -3,6 +3,7 @@
 #include "Engine/Input.h"
 #include "Aim.h"
 #include "Stage.h"
+#include "SnowBall.h"
 #include "Engine/Text.h"
 
 namespace {
@@ -28,10 +29,17 @@ void Player::Initialize()
     pText = new Text();
     pText->Initialize();
 
+    SnowBall* tempSnowBall = Instantiate<SnowBall>(this);
+    if (tempSnowBall) {
+        tempSnowBall->Initialize();
+        SetSnowBall(tempSnowBall);  // pSnowBall_にSnowBallのインスタンスを設定
+    }
 }
 
 void Player::Update()
 {
+    lastPosition_ = transform_.position_;
+
 	//操作キャラじゃないなら動かしてみる
 	if (!isPlayer_) return;
 	
@@ -59,6 +67,27 @@ void Player::Update()
     vMove = XMVector3Normalize(vMove);
     vMove *= 0.1f;
     XMStoreFloat3(&transform_.position_, vPos + vMove);
+
+    XMFLOAT3 diff;
+    diff.x = transform_.position_.x - lastPosition_.x;
+    diff.y = transform_.position_.y - lastPosition_.y;
+    diff.z = transform_.position_.z - lastPosition_.z;
+    float distanceMoved = sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+    accumulatedDistance_ += distanceMoved;
+
+    //スケールの上限
+    if (pSnowBall_ && isPlayer_) {
+        float scaleCoefficient = 0.03f; // スケールの増加率を調整する係数
+        float maxScale = 2.0;
+        float newScale = 0.1f + scaleCoefficient * accumulatedDistance_;
+        
+        //スケールが最大値を超えないように
+        if (newScale > maxScale)
+        {
+            newScale = maxScale;
+        }
+        pSnowBall_->SetScale(newScale);
+    }
 
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     int hGroundModel = pStage->GetModelHandle();    //モデル番号を取得

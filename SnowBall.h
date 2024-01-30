@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"
 class SnowBall : public GameObject
 {
+	int hModel_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -18,5 +19,7 @@ public:
 
 	//開放
 	void Release() override;
+
+	void SetScale(float scale);
 };
 
