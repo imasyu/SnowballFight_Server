@@ -25,6 +25,7 @@ public:
     bool IsPlayer() { return isPlayer_; }
     void SetSnowBall(SnowBall* snowBall) { pSnowBall_ = snowBall; }
     void Shot();
+    void RayCastStage();
 
 };
 

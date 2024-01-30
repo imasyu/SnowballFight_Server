@@ -20,6 +20,9 @@ void Stage::Initialize()
 	// ’n–Ê“Ç‚Ýž‚Ý
 	hModel_[1] = Model::Load("iceGround.fbx");
 	assert(hModel_[1] >= 0);
+
+	transform_.position_ = { 100.0f, 0, 100.0f };
+
 }
 
 void Stage::Update()

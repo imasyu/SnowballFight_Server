@@ -36,6 +36,8 @@ void Player::Initialize()
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
 
+    transform_.position_ = { 100.0f, 0.0f, 100.0f };
+
 }
 
 void Player::Update()
@@ -43,7 +45,10 @@ void Player::Update()
     lastPosition_ = transform_.position_;
 
 	//操作キャラじゃないなら動かしてみる
-	if (!isPlayer_) return;
+    if (!isPlayer_) {
+        RayCastStage();
+        return;
+    };
 	
     XMFLOAT3 fMove = { 0,0,0 };
     XMFLOAT3 aimDirection = pAim_->GetAimDirection();
@@ -104,19 +109,8 @@ void Player::Update()
     if (Input::IsKeyDown(DIK_SPACE)) {
         Shot();
     }
-
-    RayCastData data;
-    data.start = transform_.position_;   //レイの発射位置
-    data.start.y = 0;
-    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hGroundModel_, &data); //レイを発射
-
-    //レイが当たったら
-    if (data.hit)
-    {
-        //その分位置を下げる
-        transform_.position_.y = -data.dist;
-    }
+    
+    RayCastStage();
 }
 
 void Player::Draw()
@@ -179,6 +173,23 @@ void Player::Shot()
 
         pSnowBall_ = Instantiate<SnowBall>(GetParent());
 
+    }
+
+}
+
+void Player::RayCastStage()
+{
+    RayCastData data;
+    data.start = transform_.position_;   //レイの発射位置
+    data.start.y = 0;
+    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
+    Model::RayCast(hGroundModel_, &data); //レイを発射
+
+    //レイが当たったら
+    if (data.hit)
+    {
+        //その分位置を下げる
+        transform_.position_.y = -data.dist;
     }
 
 }
