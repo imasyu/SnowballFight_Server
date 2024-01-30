@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Stage.h"
 
+
 namespace {
 	const std::string SERVERPORT = "192.168.43.66";	//クライアントの時接続するサーバの数値を入れる
 
