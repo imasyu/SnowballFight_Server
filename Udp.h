@@ -11,6 +11,7 @@ protected:
 		u_long posX;	//”{—¦‚P–œ
 		u_long posZ;	//”{—¦‚P–œ
 		u_long rotateY;	//
+		u_short shot;	//‘Å‚Á‚½‚©‚Ìƒtƒ‰ƒO
 	};
 
 	int ret_;

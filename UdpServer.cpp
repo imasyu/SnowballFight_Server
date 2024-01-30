@@ -2,6 +2,7 @@
 #include <WS2tcpip.h>
 #include "Player.h"
 #include "NetworkManager.h"
+#include "Engine/Input.h"
 
 namespace {
 	// ポート番号
@@ -59,7 +60,9 @@ int UdpServer::Update()
 	if (Recv(sock_, &data)) {
 		//受信できた
 		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
-		OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+//		OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+		OutputDebugString(std::to_string(data.shot).c_str());
+		OutputDebugString("\n");
 
 		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 		NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
@@ -74,6 +77,7 @@ int UdpServer::Update()
 	data.posX = (pos.x * MAGNFICATION);
 	data.posZ = (pos.z * MAGNFICATION);
 	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
+	data.shot = Input::IsKey(DIK_SPACE);
 
 	if (!Send(sock_, data)) {
 		OutputDebugString("送信エラー\n");
@@ -107,6 +111,7 @@ bool UdpServer::Recv(SOCKET sock, DATA* value)
 	value->posX = ntohl(recvValue.posX);
 	value->posZ = ntohl(recvValue.posZ);
 	value->rotateY = ntohl(recvValue.rotateY);
+	value->shot = htons(recvValue.shot);
 
 	return 1;
 }
@@ -120,6 +125,7 @@ bool UdpServer::Send(SOCKET sock, DATA value)
 	sendValue.posX = htonl(value.posX);
 	sendValue.posZ = htonl(value.posZ);
 	sendValue.rotateY = htonl(value.rotateY);
+	sendValue.shot = htons(value.shot);
 
 	int fromlen = sizeof(fromAddr);
 	ret_ = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, fromlen);

@@ -2,6 +2,7 @@
 #include <WS2tcpip.h>
 #include "Player.h"
 #include "NetworkManager.h"
+#include "Engine/Input.h"
 
 namespace {
 	// ポート番号
@@ -47,6 +48,7 @@ int UdpClient::Update()
 	data.posX = (pos.x * MAGNFICATION);
 	data.posZ = (pos.z * MAGNFICATION);
 	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
+	data.shot = Input::IsKey(DIK_SPACE);
 
 	// 送信
 	if (!Send(sock_, data)) {
@@ -61,7 +63,10 @@ int UdpClient::Update()
 	}
 
 	pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
-	OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+	
+	//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+	OutputDebugString( std::to_string(data.shot).c_str());
+	OutputDebugString("\n");
 
 	NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 	NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
@@ -94,6 +99,7 @@ bool UdpClient::Recv(SOCKET sock, DATA* value)
 	value->posX = ntohl(recvValue.posX);
 	value->posZ = ntohl(recvValue.posZ);
 	value->rotateY = ntohl(recvValue.rotateY);
+	value->shot = ntohs(recvValue.shot);
 
 	return 1;
 }
@@ -107,6 +113,7 @@ bool UdpClient::Send(SOCKET sock, DATA value)
 	sendValue.posX = htonl(value.posX);
 	sendValue.posZ = htonl(value.posZ);
 	sendValue.rotateY = htonl(value.rotateY);
+	sendValue.shot = htons(value.shot);
 
 	SOCKADDR_IN toAddr;	// 宛先のソケットアドレス情報
 	memset(&toAddr, 0, sizeof(toAddr));
