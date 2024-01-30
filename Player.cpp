@@ -89,6 +89,21 @@ void Player::Update()
         pSnowBall_->SetScale(newScale);
     }
 
+    if (Input::IsKeyDown(DIK_SPACE)) {
+        XMVECTOR vAim = XMLoadFloat3(&aimDirection);
+        XMVECTOR vTrans = XMLoadFloat3(&transform_.rotate_);
+
+        XMVECTOR vMove = vAim - vTrans;
+        vAim = XMVector3Normalize(vAim);
+        vAim *= 0.1f;
+        XMFLOAT3 move;
+        XMStoreFloat3(&move, vAim);
+
+        pSnowBall_ = Instantiate<SnowBall>(GetParent()->GetParent());
+        pSnowBall_->SetPosition(transform_.position_);
+        pSnowBall_->SetVelocity(aimDirection);
+    }
+
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     int hGroundModel = pStage->GetModelHandle();    //モデル番号を取得
 

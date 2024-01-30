@@ -3,6 +3,7 @@
 class SnowBall : public GameObject
 {
 	int hModel_;
+	XMFLOAT3 velocity_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -21,5 +22,7 @@ public:
 	void Release() override;
 
 	void SetScale(float scale);
+
+	void SetVelocity(XMFLOAT3 velocity) { velocity_ = velocity; }
 };
 
