@@ -5,6 +5,8 @@ class Player : public GameObject
 {
     bool isPlayer_;     //操作するプレイヤーかどうか
     int hModel_;
+    int hGroundModel_;
+
     XMFLOAT3 lastPosition_;  //前フレームの位置を記憶
     float accumulatedDistance_;  // 移動距離の累積
 
@@ -22,6 +24,7 @@ public:
     void InitializeIsPlayer();
     bool IsPlayer() { return isPlayer_; }
     void SetSnowBall(SnowBall* snowBall) { pSnowBall_ = snowBall; }
+    void Shot();
 
 };
 

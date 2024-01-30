@@ -2,6 +2,7 @@
 #include <WS2tcpip.h>
 #include "Player.h"
 #include "NetworkManager.h"
+#include "Engine/Input.h"
 
 namespace {
 	// ポート番号
@@ -14,7 +15,7 @@ namespace {
 int UdpServer::CreateSocket(std::string port)
 {
 	port_ = port;
-	
+
 	// リスンソケットの作成
 	sock_ = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock_ == INVALID_SOCKET)
@@ -29,7 +30,7 @@ int UdpServer::CreateSocket(std::string port)
 	bindAddr.sin_family = AF_INET;
 	bindAddr.sin_port = htons(SERVERPORT);
 	bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	
+
 	//ソケットアドレス情報設定	※固定のポート番号設定
 	ret_ = bind(sock_, (SOCKADDR*)&bindAddr, sizeof(bindAddr));
 	if (ret_ == SOCKET_ERROR)
@@ -59,10 +60,13 @@ int UdpServer::Update()
 	if (Recv(sock_, &data)) {
 		//受信できた
 		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
-		OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+		//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
+		//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
 		NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 		NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
+		if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
+
 	}
 	else {
 		OutputDebugString("受信エラー\n");
@@ -74,6 +78,7 @@ int UdpServer::Update()
 	data.posX = (pos.x * MAGNFICATION);
 	data.posZ = (pos.z * MAGNFICATION);
 	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
+	data.shot = Input::IsKeyDown(DIK_SPACE);
 
 	if (!Send(sock_, data)) {
 		OutputDebugString("送信エラー\n");
@@ -107,6 +112,7 @@ bool UdpServer::Recv(SOCKET sock, DATA* value)
 	value->posX = ntohl(recvValue.posX);
 	value->posZ = ntohl(recvValue.posZ);
 	value->rotateY = ntohl(recvValue.rotateY);
+	value->shot = htons(recvValue.shot);
 
 	return 1;
 }
@@ -120,6 +126,7 @@ bool UdpServer::Send(SOCKET sock, DATA value)
 	sendValue.posX = htonl(value.posX);
 	sendValue.posZ = htonl(value.posZ);
 	sendValue.rotateY = htonl(value.rotateY);
+	sendValue.shot = htons(value.shot);
 
 	int fromlen = sizeof(fromAddr);
 	ret_ = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&fromAddr, fromlen);

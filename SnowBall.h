@@ -3,6 +3,7 @@
 class SnowBall : public GameObject
 {
 	int hModel_;
+	int hGroundModel_;
 	XMFLOAT3 velocity_;
 public:
 	//コンストラクタ
@@ -23,6 +24,7 @@ public:
 
 	void SetScale(float scale);
 
-	void SetVelocity(XMFLOAT3 velocity) { velocity_ = velocity; }
+	void SetVelocity(XMFLOAT3 velocity);
+
 };
 
