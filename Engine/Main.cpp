@@ -3,10 +3,6 @@
 //　最終更新日：2023/10/20
 //
 
-
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-
 #include <Windows.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -21,16 +17,10 @@
 #include "Audio.h"
 #include "VFX.h"
 
-#pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib,"Winmm.lib")
 
 //定数宣言
 const char* WIN_CLASS_NAME = "SampleGame";	//ウィンドウクラス名
-
-// ポート番号
-const unsigned short SERVERPORT = 8888;
-// 送受信するメッセージの最大値
-const unsigned int MESSAGELENGTH = 1024;
 
 //プロトタイプ宣言
 HWND InitApp(HINSTANCE hInstance, int screenWidth, int screenHeight, int nCmdShow);
@@ -40,10 +30,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // エントリーポイント
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	//#if defined(DEBUG) | defined(_DEBUG)
-	//	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//#endif
-
 	srand((unsigned)time(NULL));
 	SetCurrentDirectory("Assets");
 
@@ -52,9 +38,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int screenHeight = GetPrivateProfileInt("SCREEN", "Height", 600, ".\\setup.ini");	//スクリーンの高さ
 	int fpsLimit = GetPrivateProfileInt("GAME", "Fps", 60, ".\\setup.ini");				//FPS（画面更新速度）
 	int isDrawFps = GetPrivateProfileInt("DEBUG", "ViewFps", 0, ".\\setup.ini");		//キャプションに現在のFPSを表示するかどうか
-
-
-
 
 	//ウィンドウを作成
 	HWND hWnd = InitApp(hInstance, screenWidth, screenHeight, nCmdShow);
@@ -71,70 +54,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//オーディオ（効果音）の準備
 	Audio::Initialize();
 
-
 	//ルートオブジェクト準備
 	//すべてのゲームオブジェクトの親となるオブジェクト
 	RootObject* pRootObject = new RootObject;
 	pRootObject->Initialize();
-
-	// WinSock初期化
-	WSADATA wsaData;
-	int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (ret != 0)
-	{
-		return 1;
-	}
-	// リスンソケットの作成
-	int listenSock;
-	listenSock = socket(AF_INET, SOCK_STREAM, 0);	// 0で自動設定
-	// リスンソケット作成失敗
-	if (listenSock < 0)
-	{
-		// エラーコードを出力
-		// 終了
-		return 1;
-	}
-
-	// bind
-	struct sockaddr_in bindAddr;	// bind用のソケットアドレス情報
-	memset(&bindAddr, 0, sizeof(bindAddr));
-	bindAddr.sin_family = AF_INET;
-	bindAddr.sin_port = htons(SERVERPORT);
-	bindAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
-	// ソケットアドレス情報設定	※固定のポート番号設定
-	if (bind(listenSock, (struct sockaddr*)&bindAddr, sizeof(bindAddr)) != 0)
-	{
-		// エラーコードを出力
-		// 終了
-		return 1;
-	}
-
-	// リスン状態に設定	キューのサイズ:1
-	if (listen(listenSock, 1) != 0)
-	{
-		// エラーコードを出力
-		// 終了
-		return 1;
-	}
-
-	// 通信用ソケット ( クライアントのソケットとこのソケット間にコネクションが確立 )
-	int sock;
-
-
-	struct sockaddr_in clientAddr;		// 接続要求をしてきたクライアントのソケットアドレス情報格納領域
-	int addrlen = sizeof(clientAddr);	// clientAddrのサイズ
-
-	// クライアントからのconnect()を受けて、コネクション確立済みのソケット作成
-	sock = accept(listenSock, (struct sockaddr*)&clientAddr, &addrlen);
-	if (sock < 0)
-	{
-		// エラーコードを出力
-		// 終了
-		return 1;
-	}
-
-
 
 	//メッセージループ（何か起きるのを待つ）
 	MSG msg;
@@ -180,33 +103,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				//時間計測関連
 				lastUpdateTime = nowTime;	//現在の時間（最後に画面を更新した時間）を覚えておく
 				FPS++;						//画面更新回数をカウントする
-
-
-				char buff[MESSAGELENGTH];	// 送受信メッセージの格納領域
-				// クライアントからのメッセージ受信
-				ret = recv(sock, buff, sizeof(buff) - 1, 0);
-				if (ret < 0)
-				{
-					// ぬける
-					break;
-				}
-
-				buff[0] = 'a';
-				buff[1] = '\n';
-
-				// 終端記号の追加
-				buff[ret] = '\0';
-
-				// 出力
-				OutputDebugString(buff);
-
-				// 送信
-				ret = send(sock, buff, strlen(buff), 0);
-				if (ret != strlen(buff))
-				{
-					// ぬける
-					break;
-				}
 
 				//入力（キーボード、マウス、コントローラー）情報を更新
 				Input::Update();

@@ -59,7 +59,7 @@ void Player::Update()
     vMove = XMVector3Normalize(vMove);
     vMove *= 0.1f;
     XMStoreFloat3(&transform_.position_, vPos + vMove);
-
+   
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     int hGroundModel = pStage->GetModelHandle();    //モデル番号を取得
 
