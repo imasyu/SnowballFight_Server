@@ -34,7 +34,7 @@ void Player::Update()
 	//‘€ìƒLƒƒƒ‰‚¶‚á‚È‚¢‚È‚ç“®‚©‚µ‚Ä‚Ý‚é
 	if (!isPlayer_) return;
 
-    if (Input::IsKey(DIK_SPACE)) Shot();
+    if (Input::IsKeyDown(DIK_SPACE)) Shot();
 	
     XMFLOAT3 fMove = { 0,0,0 };
     XMFLOAT3 aimDirection = pAim_->GetAimDirection();
@@ -91,6 +91,6 @@ void Player::InitializeIsPlayer()
 
 void Player::Shot()
 {
-    Instantiate<Ball>(this);
+    Instantiate<Ball>(GetParent());
 
 }

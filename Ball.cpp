@@ -16,6 +16,9 @@ void Ball::Initialize()
 	hModel_ = Model::Load("yukidaruma.fbx");
 	assert(hModel_ >= 0);
 
+	transform_.position_.x = 5.0f;
+	transform_.position_.z = 5.0f;
+
 }
 
 void Ball::Update()
@@ -26,8 +29,7 @@ void Ball::Update()
 		return;
 	}
 
-	float s = time_ * time_ * 0.001f;
-	transform_.scale_ = { s, s, s };
+	transform_.position_.y += 0.3f;
 
 }
 
