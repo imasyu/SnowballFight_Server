@@ -8,7 +8,7 @@ namespace {
 }
 
 SnowBall::SnowBall(GameObject* parent)
-	: GameObject(parent, "SnowBall"), hModel_(-1), hGroundModel_(-1)
+	: GameObject(parent, "SnowBall"), hModel_(-1), hGroundModel_(-1), velocity_(0,0,0), isShot_(false)
 {
 }
 
@@ -27,10 +27,15 @@ void SnowBall::Initialize()
 
 void SnowBall::Update()
 {
+	if (isShot_) {
+		transform_.scale_.x += 0.03f;
+		transform_.scale_.y += 0.03f;
+		transform_.scale_.z += 0.03f;
+	}
+
 	transform_.position_.x += velocity_.x;
 	transform_.position_.y += velocity_.y;
 	transform_.position_.z += velocity_.z;
-
 
 	RayCastData data;
 	data.start = transform_.position_;   //ƒŒƒC‚Ì”­ŽËˆÊ’u

@@ -12,7 +12,8 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1)
+	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
+    lastPosition_(0,0,0), pSnowBall_(nullptr)
 {
 }
 
@@ -29,11 +30,8 @@ void Player::Initialize()
     pText = new Text();
     pText->Initialize();
 
-    SnowBall* tempSnowBall = Instantiate<SnowBall>(this);
-    if (tempSnowBall) {
-        tempSnowBall->Initialize();
-        SetSnowBall(tempSnowBall);  // pSnowBall_にSnowBallのインスタンスを設定
-    }
+    //SnowBallのインスタンスを設定
+    pSnowBall_ = Instantiate<SnowBall>(GetParent());
 
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
@@ -81,9 +79,9 @@ void Player::Update()
 
     //スケールの上限
     if (pSnowBall_ && isPlayer_) {
-        float scaleCoefficient = 0.4f; // スケールの増加率を調整する係数
+        float scaleCoefficient = 0.1f; // スケールの増加率を調整する係数
         float maxScale = 2.0;
-        float newScale = 0.3f + scaleCoefficient * accumulatedDistance_;
+        float newScale = 0.1f + scaleCoefficient * accumulatedDistance_;
         
         //スケールが最大値を超えないように
         if (newScale > maxScale)
@@ -91,6 +89,16 @@ void Player::Update()
             newScale = maxScale;
         }
         pSnowBall_->SetScale(newScale);
+
+        //ポジションのセット
+        vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
+        XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+        vMove = XMVector3TransformCoord(vMove, mRotY);
+        vMove += newScale / maxScale * vMove;
+        XMFLOAT3 vec = XMFLOAT3();
+        XMStoreFloat3(&vec, vPos + vMove);
+        pSnowBall_->SetPosition(vec);
+
     }
 
     if (Input::IsKeyDown(DIK_SPACE)) {
@@ -137,6 +145,9 @@ void Player::InitializeIsPlayer()
 
 void Player::Shot()
 { 
+    //増加率リセット
+    accumulatedDistance_ = 0.0f;
+
     if(isPlayer_) {
         XMFLOAT3 aimDirection = pAim_->GetAimDirection();
         XMVECTOR vAim = XMLoadFloat3(&aimDirection);
@@ -147,13 +158,12 @@ void Player::Shot()
         vAim *= 0.1f;
         XMFLOAT3 move;
         XMStoreFloat3(&move, vAim);
-
-        pSnowBall_ = Instantiate<SnowBall>(GetParent()->GetParent());
         pSnowBall_->SetPosition(transform_.position_);
         pSnowBall_->SetVelocity(aimDirection);
+        pSnowBall_->SetIsShot(true);
 
-        //増加率リセット
-        accumulatedDistance_ = 0.0f;
+        pSnowBall_ = Instantiate<SnowBall>(GetParent());
+        
     }
     else {
         //向いている方向へ前進
@@ -163,10 +173,12 @@ void Player::Shot()
         vMove = XMVector3TransformCoord(vMove, mRotY);
         XMFLOAT3 vec = XMFLOAT3();
         XMStoreFloat3(&vec, vMove);
-
-        pSnowBall_ = Instantiate<SnowBall>(GetParent()->GetParent());
         pSnowBall_->SetPosition(transform_.position_);
         pSnowBall_->SetVelocity(vec);
+        pSnowBall_->SetIsShot(true);
+
+        pSnowBall_ = Instantiate<SnowBall>(GetParent());
+
     }
 
 }

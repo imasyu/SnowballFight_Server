@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"
 class SnowBall : public GameObject
 {
+	bool isShot_;
 	int hModel_;
 	int hGroundModel_;
 	XMFLOAT3 velocity_;
@@ -25,6 +26,8 @@ public:
 	void SetScale(float scale);
 
 	void SetVelocity(XMFLOAT3 velocity);
+
+	void SetIsShot(bool b) { isShot_ = true; }
 
 };
 

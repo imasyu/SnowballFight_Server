@@ -1,5 +1,6 @@
 #include "Stage.h"
 #include "Engine/Model.h"
+#include "Engine/Direct3D.h"
 
 Stage::Stage(GameObject* parent)
 	: GameObject(parent, "Stage"), hModel_{-1,-1}
@@ -27,11 +28,14 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-	for (int i = 0; i < 2; i++)
-	{
-		Model::SetTransform(hModel_[i], transform_);
-		Model::Draw(hModel_[i]);
-	}
+	Direct3D::SetShader(Direct3D::SHADER_SKYBOX);
+	Model::SetTransform(hModel_[0], transform_);
+	Model::Draw(hModel_[0]);
+	
+	Direct3D::SetShader(Direct3D::SHADER_3D);
+	Model::SetTransform(hModel_[1], transform_);
+	Model::Draw(hModel_[1]);
+
 }
 
 void Stage::Release()
