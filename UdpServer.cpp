@@ -64,9 +64,9 @@ bool UdpServer::Update()
 		//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
 		if (data.shot == 0 || data.shot == 1) {
-			NetworkManager::GetOtherPlayer()->SetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
+			NetworkManager::GetOtherPlayer()->NotPlayerSetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
 			NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
-			if (Input::IsKeyDown(DIK_SPACE)) NetworkManager::GetOtherPlayer()->Shot();
+			if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
 		}
 
 	}

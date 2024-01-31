@@ -18,8 +18,6 @@ void SnowBall::Initialize()
 	hModel_ = Model::Load("SnowBall.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.position_ = { 0, 1, 1.5f };
-
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
 	hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
 

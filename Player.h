@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/GameObject.h"	
 
+class SnowBall;
+
 class Player : public GameObject
 {
     bool isPlayer_;     //ëÄçÏÇ∑ÇÈÉvÉåÉCÉÑÅ[Ç©Ç«Ç§Ç©
@@ -26,6 +28,7 @@ public:
     void SetSnowBall(SnowBall* snowBall) { pSnowBall_ = snowBall; }
     void Shot();
     void RayCastStage();
+    void NotPlayerSetPosition(XMFLOAT3 pos);
 
 };
 
