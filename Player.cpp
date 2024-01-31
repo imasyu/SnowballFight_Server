@@ -36,6 +36,9 @@ void Player::Initialize()
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
 
+    pCollision_ = new SphereCollider(XMFLOAT3(0, 0.8, 0), 1.1);
+    AddCollider(pCollision_);
+
     transform_.position_ = { 100.0f, 0.0f, 100.0f };
     lastPosition_ = transform_.position_;
 

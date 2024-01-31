@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"	
 
 class SnowBall;
+class SphereCollider;
 
 class Player : public GameObject
 {
@@ -12,6 +13,7 @@ class Player : public GameObject
     XMFLOAT3 lastPosition_;  //前フレームの位置を記憶
     float accumulatedDistance_;  // 移動距離の累積
 
+    SphereCollider* pCollision_;
     class Aim* pAim_;
     class SnowBall* pSnowBall_;
 public:

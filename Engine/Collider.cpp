@@ -95,3 +95,16 @@ void Collider::Draw(XMFLOAT3 position)
 	Model::SetTransform(hDebugModel_, transform);
 	Model::Draw(hDebugModel_);
 }
+
+
+void Collider::SetRadius(float radius)
+{
+}
+
+void Collider::SetCenter(XMFLOAT3 center)
+{
+}
+
+void Collider::Update() 
+{
+}

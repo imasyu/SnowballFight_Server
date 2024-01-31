@@ -69,5 +69,14 @@ public:
 	//セッター
 	void SetGameObject(GameObject* gameObject) { pGameObject_ = gameObject; }
 
+
+	// コリジョンのサイズを設定
+	virtual void SetRadius(float radius);
+
+	// コリジョンの中心位置を設定
+	virtual void SetCenter(XMFLOAT3 center);
+
+	// コリジョンの更新
+	virtual void Update();
 };
 

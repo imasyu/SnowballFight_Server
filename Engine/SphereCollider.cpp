@@ -2,6 +2,8 @@
 #include "BoxCollider.h"
 #include "Model.h"
 
+#include "GameObject.h" 
+
 //コンストラクタ（当たり判定の作成）
 //引数：basePos	当たり判定の中心位置（ゲームオブジェクトの原点から見た位置）
 //引数：size	当たり判定のサイズ
@@ -16,6 +18,20 @@ SphereCollider::SphereCollider(XMFLOAT3 center, float radius)
 	//テスト表示用判定枠
 	hDebugModel_ = Model::Load("DebugCollision/sphereCollider.fbx");
 #endif
+}
+
+void SphereCollider::Update()
+{
+}
+
+void SphereCollider::SetRadius(float radius)
+{
+	size_ = XMFLOAT3(radius, radius, radius);
+}
+
+void SphereCollider::SetCenter(XMFLOAT3 center)
+{
+	center_ = center;
 }
 
 //接触判定

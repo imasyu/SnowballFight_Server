@@ -16,6 +16,9 @@ public:
 	//引数：size	当たり判定のサイズ（幅、高さ、奥行き）
 	BoxCollider(XMFLOAT3 basePos, XMFLOAT3 size);
 
+	// 箱型コリジョンの更新
+	void Update() override;
+
 private:
 	//接触判定
 	//引数：target	相手の当たり判定
