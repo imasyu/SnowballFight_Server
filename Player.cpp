@@ -13,7 +13,7 @@ namespace {
 
 Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
-    lastPosition_(0,0,0), pSnowBall_(nullptr)
+    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr)
 {
 }
 
@@ -149,8 +149,9 @@ void Player::Shot()
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY);
-    XMFLOAT3 vec = XMFLOAT3();
+    XMFLOAT3 vec;
     XMStoreFloat3(&vec, vMove);
+
     pSnowBall_->SetPosition(transform_.position_);
     pSnowBall_->SetVelocity(vec);
     pSnowBall_->SetIsShot(true);
@@ -211,5 +212,18 @@ void Player::NotPlayerSetPosition(XMFLOAT3 pos)
         XMStoreFloat3(&vec, vPos + vMove);
         vec.y += pSnowBall_->GetScale().x * 0.7f;
         pSnowBall_->SetPosition(vec);
+    }
+}
+
+void Player::OnCollision(GameObject* pTarget)
+{
+    // 雪玉に当たったとき
+    if (pTarget->GetObjectName() == "SnowBall")
+    {
+        // プレイヤー自身が撃った雪玉でない場合にのみKillMe()を呼ぶ
+        if (pSnowBall_->GetPlayer() != this)
+        {
+            KillMe();
+        }
     }
 }

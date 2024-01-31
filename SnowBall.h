@@ -2,6 +2,7 @@
 #include "Engine/GameObject.h"
 
 class SphereCollider;
+class Player;
 
 class SnowBall : public GameObject
 {
@@ -12,7 +13,7 @@ class SnowBall : public GameObject
 	XMFLOAT3 velocity_;
 	float gravity_;
 	SphereCollider* pCollision_;
-
+	Player* pPlayer_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
@@ -50,5 +51,9 @@ public:
 
 	// 何かに当たった
 	void OnCollision(GameObject* pTarget) override;
+
+	// プレイヤーを取得するメソッド
+	Player* GetPlayer() const { return pPlayer_; }
+
 };
 
