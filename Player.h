@@ -12,7 +12,7 @@ class Player : public GameObject
 
     XMFLOAT3 lastPosition_;  //前フレームの位置を記憶
     float accumulatedDistance_;  // 移動距離の累積
-
+    XMFLOAT3 shotDirection_;
     Player* pPlayer_;
     SphereCollider* pCollision_;
     class Aim* pAim_;

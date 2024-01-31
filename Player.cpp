@@ -12,7 +12,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
+	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0), shotDirection_(0,0,0),
     lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr)
 {
 }
@@ -148,11 +148,10 @@ void Player::Shot()
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY);
-    XMFLOAT3 shotDirection;
-    XMStoreFloat3(&shotDirection, vMove);
+    XMStoreFloat3(&shotDirection_, vMove);
 
     pSnowBall_->SetPosition(transform_.position_);
-    pSnowBall_->SetVelocity(shotDirection);
+    pSnowBall_->SetVelocity(shotDirection_);
     pSnowBall_->SetIsShot(true);
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
 }
