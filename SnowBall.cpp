@@ -105,6 +105,14 @@ void SnowBall::SetScale(float scale)
 void SnowBall::SetVelocity(XMFLOAT3 velocity)
 {
 	velocity_ = { velocity.x * SPEED, velocity.y * SPEED, velocity.z * SPEED };
+	// デバッグ情報の出力
+	OutputDebugStringA("SnowBall Velocity: ");
+	OutputDebugStringA(std::to_string(velocity_.x).c_str());
+	OutputDebugStringA(", ");
+	OutputDebugStringA(std::to_string(velocity_.y).c_str());
+	OutputDebugStringA(", ");
+	OutputDebugStringA(std::to_string(velocity_.z).c_str());
+	OutputDebugStringA("\n");
 }
 
 void SnowBall::OnCollision(GameObject* pTarget)

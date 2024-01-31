@@ -55,5 +55,7 @@ public:
 	// プレイヤーを取得するメソッド
 	Player* GetPlayer() const { return pPlayer_; }
 
+	// 進行方向(速度)を取得する
+	XMFLOAT3 GetVelocity() { return velocity_; }
 };
 

@@ -141,22 +141,20 @@ void Player::InitializeIsPlayer()
 }
 
 void Player::Shot()
-{ 
+{
     //増加率リセット
     accumulatedDistance_ = 0.0f;
 
-    XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY);
-    XMFLOAT3 vec;
-    XMStoreFloat3(&vec, vMove);
+    XMFLOAT3 shotDirection;
+    XMStoreFloat3(&shotDirection, vMove);
 
     pSnowBall_->SetPosition(transform_.position_);
-    pSnowBall_->SetVelocity(vec);
+    pSnowBall_->SetVelocity(shotDirection);
     pSnowBall_->SetIsShot(true);
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
-    
 }
 
 void Player::RayCastStage()
@@ -220,10 +218,45 @@ void Player::OnCollision(GameObject* pTarget)
     // 雪玉に当たったとき
     if (pTarget->GetObjectName() == "SnowBall")
     {
-        // プレイヤー自身が撃った雪玉でない場合にのみKillMe()を呼ぶ
-        if (pSnowBall_->GetPlayer() != this)
+        // プレイヤー自身が撃った雪玉でない場合にのみ
+        if (pSnowBall_ && pSnowBall_->GetPlayer() != this)
         {
-            KillMe();
+
+
+            XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f }; // ノックバック方向
+            // ノックバックの方向と距離を設定
+            float knockbackDistance = 5.0f; // ノックバック距離
+
+            // ノックバック処理
+            XMVECTOR vKnockback = XMLoadFloat3(&knockbackDirection);
+            vKnockback = XMVector3Normalize(vKnockback) * knockbackDistance;
+            XMFLOAT3 knockbackOffset;
+            XMStoreFloat3(&knockbackOffset, vKnockback);
+
+            // 新しい位置を設定
+            XMFLOAT3 newPosition = transform_.position_;
+            newPosition.x += knockbackOffset.x;
+            newPosition.y += knockbackOffset.y;
+            newPosition.z += knockbackOffset.z;
+
+            // プレイヤーの位置を更新
+            transform_.position_ = newPosition;
+
+            /*
+            // 雪玉の進行方向ベクトルを取得
+            XMFLOAT3 snowballDirection = pSnowBall_->GetVelocity();
+
+            // ノックバック処理
+            XMVECTOR vKnockback = XMLoadFloat3(&snowballDirection);
+            vKnockback = XMVector3Normalize(vKnockback) * knockbackDistance;
+            XMFLOAT3 knockbackOffset;
+            XMStoreFloat3(&knockbackOffset, vKnockback);
+
+            transform_.position_.x += knockbackOffset.x;
+            transform_.position_.y += knockbackOffset.y;
+            transform_.position_.z += knockbackOffset.z;
+            */
+
         }
     }
 }
