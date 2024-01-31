@@ -4,6 +4,7 @@
 #include "Aim.h"
 #include "Stage.h"
 #include "SnowBall.h"
+#include "HitVFX.h"
 #include "Engine/Text.h"
 
 namespace {
@@ -38,7 +39,6 @@ void Player::Initialize()
 
     transform_.position_ = { 100.0f, 0.0f, 100.0f };
     lastPosition_ = transform_.position_;
-
 }
 
 void Player::Update()
@@ -109,8 +109,14 @@ void Player::Update()
 
     if (isPlayer_ && Input::IsKeyDown(DIK_SPACE)) {
         Shot();
-    }
 
+        float hitX = transform_.position_.x;
+        float hitY = transform_.position_.y;
+        float hitZ = transform_.position_.z;
+
+        HitVFX hitVFX;
+        hitVFX.CreatePosition(hitX, hitY, hitZ);
+    }
 }
 
 void Player::Draw()

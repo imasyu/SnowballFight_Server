@@ -125,6 +125,8 @@
     <ClCompile Include="Stage.cpp">
       <Filter>03Scene</Filter>
     </ClCompile>
+    <ClCompile Include="SnowBall.cpp" />
+    <ClCompile Include="HitVFX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -220,6 +222,8 @@
     <ClInclude Include="Stage.h">
       <Filter>03Scene</Filter>
     </ClInclude>
+    <ClInclude Include="SnowBall.h" />
+    <ClInclude Include="HitVFX.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">
@@ -232,6 +236,9 @@
       <Filter>02Shader</Filter>
     </FxCompile>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">
+      <Filter>02Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Assets\Shader\SkyBox.hlsl">
       <Filter>02Shader</Filter>
     </FxCompile>
   </ItemGroup>
