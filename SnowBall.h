@@ -56,6 +56,6 @@ public:
 	Player* GetPlayer() const { return pPlayer_; }
 	void SetPlayer(Player* player) { pPlayer_ = player; }
 
-	XMFLOAT3 GetPosition() { return transform_.position_; }
+	XMFLOAT3& GetPosition() { return transform_.position_; }
 };
 

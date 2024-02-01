@@ -216,20 +216,19 @@ void Player::OnCollision(GameObject* pTarget)
         // プレイヤー自身が撃った雪玉でない場合にのみ
         if (ball->GetPlayer() != this)
         {
-            // ノックバック方向を計算
-            XMFLOAT3 knockbackDirection = { 0, 0, 1 };
-            //XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
-            //XMStoreFloat3(&knockbackDirection, vKnockbackDirection);
-            //knockbackDirection.y = 0.0f; // y軸の変化は考慮しない
+            // ノックバックの方向を設定(雪玉の位置-プレイヤーの位置)
+            XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f };
+            XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
 
-            // ノックバックの威力を設定
-            float knockbackDistance = 5.0f; // ノックバック距離
+            // ノックバックの威力を設定(後で累計移動距離にする)
+            float KnockbackPower = 2.0f;
 
-            // ノックバック処理
-            XMVECTOR vKnockback = XMLoadFloat3(&knockbackDirection);
-            vKnockback = XMVector3Normalize(vKnockback) * knockbackDistance;
-            XMFLOAT3 knockbackOffset;
-            XMStoreFloat3(&knockbackOffset, vKnockback);
+            // 方向*威力
+            XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
+
+            // float3に戻す
+            XMStoreFloat3(&knockbackDirection, vKnockbackDirection);
+            XMFLOAT3 knockbackOffset = knockbackDirection;
 
             // 新しい位置を設定
             XMFLOAT3 newPosition = transform_.position_;

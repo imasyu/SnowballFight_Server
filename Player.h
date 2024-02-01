@@ -8,13 +8,16 @@ class Aim;
 
 class Player : public GameObject
 {
-    bool isPlayer_;          // 操作するプレイヤーかどうか
-    int hModel_;             // プレイヤーのモデルのハンドル
-    int hGroundModel_;       // 地面のモデルのハンドル
-    XMFLOAT3 lastPosition_;  // 前フレームの位置を記憶
-    float accumulatedDistance_;  // 移動距離の累積
-    XMFLOAT3 shotDirection_; // 雪玉の発射方向
-    bool isSnowHit_;  // 雪玉に当たったかどうかのフラグ
+    bool isPlayer_;             // 操作するプレイヤーかどうか
+    int hModel_;                // プレイヤーのモデルのハンドル
+    int hGroundModel_;          // 地面のモデルのハンドル
+    XMFLOAT3 lastPosition_;     // 前フレームの位置を記憶
+    float accumulatedDistance_; // 移動距離の累積
+
+    XMFLOAT3 shotDirection_;    // 雪玉の発射方向
+    bool isSnowHit_;            // 雪玉に当たったかどうかのフラグ
+    float knockbackDistance_;   // ノックバック距離
+    float knockbackTimer_;      // ノックバック経過時間
 
     SphereCollider* pCollision_; // 球体コライダー
     Aim* pAim_;              // 照準
