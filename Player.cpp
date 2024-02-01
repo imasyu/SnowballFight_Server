@@ -39,7 +39,7 @@ void Player::Initialize()
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
 
-    pCollision_ = new SphereCollider(XMFLOAT3(0, 0.8, 0), 1.1);
+    pCollision_ = new SphereCollider(XMFLOAT3(0.0f, 0.8f, 0.0f), 1.1f);
     AddCollider(pCollision_);
 
     // マイナス対策
@@ -100,7 +100,7 @@ float Player::CalculateDistanceMoved(const XMFLOAT3& currentPosition, const XMFL
     XMFLOAT3 diff{ 0.0f, 0.0f, 0.0f };
     diff.x = currentPosition.x - lastPosition.x;
     diff.z = currentPosition.z - lastPosition.z;
-    return sqrt(diff.x * diff.x + diff.z * diff.z);
+    return sqrt((float)diff.x * (float)diff.x + (float)diff.z * (float)diff.z);
 }
 
 void Player::UpdateSnowBallScale(float scaleCoefficient, float maxScale)
@@ -183,8 +183,8 @@ void Player::Draw()
 
     if (isPlayer_) 
     {
-        pText->Draw(30, 100, transform_.position_.x);
-        pText->Draw(30, 140, transform_.position_.z);
+        pText->Draw(30, 100, (int)transform_.position_.x);
+        pText->Draw(30, 140, (int)transform_.position_.z);
     }
 }
 

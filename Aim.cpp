@@ -88,6 +88,6 @@ XMVECTOR Aim::CalcDirection(float x, float y)
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(y));
     XMMATRIX mView = mRotX * mRotY;
     const XMVECTOR forwardVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //XMVector3TransformNormalを使用することで回転のみを適用します
+    XMVECTOR direction = XMVector3TransformNormal(forwardVector, mView); //回転のみを適用
     return XMVector3Normalize(direction);
 }
