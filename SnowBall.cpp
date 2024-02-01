@@ -73,12 +73,13 @@ void SnowBall::CheckRayCollision()
 	data.dir = XMFLOAT3(0, -1, 0);			// レイの方向
 	Model::RayCast(hGroundModel_, &data);	// レイを発射
 
+	float inGround = 0.7f;                  // 少し地面に埋める
 	// レイが当たったら
 	if (data.hit)
 	{
 		// その分位置を下げる
 		transform_.position_.y = -data.dist;
-		transform_.position_.y += transform_.scale_.x * 0.7f;
+		transform_.position_.y += transform_.scale_.x * inGround;
 	}
 	else
 	{
@@ -104,14 +105,6 @@ void SnowBall::SetScale(float scale)
 void SnowBall::SetVelocity(XMFLOAT3 velocity)
 {
 	velocity_ = { velocity.x * SPEED, velocity.y * SPEED, velocity.z * SPEED };
-	// デバッグ情報の出力
-	OutputDebugStringA("SnowBall Velocity: ");
-	OutputDebugStringA(std::to_string(velocity_.x).c_str());
-	OutputDebugStringA(", ");
-	OutputDebugStringA(std::to_string(velocity_.y).c_str());
-	OutputDebugStringA(", ");
-	OutputDebugStringA(std::to_string(velocity_.z).c_str());
-	OutputDebugStringA("\n");
 }
 
 void SnowBall::OnCollision(GameObject* pTarget)

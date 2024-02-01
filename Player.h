@@ -14,6 +14,8 @@ class Player : public GameObject
     XMFLOAT3 lastPosition_;  // 前フレームの位置を記憶
     float accumulatedDistance_;  // 移動距離の累積
     XMFLOAT3 shotDirection_; // 雪玉の発射方向
+    bool isSnowHit_;  // 雪玉に当たったかどうかのフラグ
+
     SphereCollider* pCollision_; // 球体コライダー
     Aim* pAim_;              // 照準
     SnowBall* pSnowBall_;    // 雪玉

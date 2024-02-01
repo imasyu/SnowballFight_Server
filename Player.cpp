@@ -15,7 +15,7 @@ namespace {
 
 Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0), shotDirection_(0,0,0),
-    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr)
+    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false)
 {
 }
 
@@ -69,8 +69,11 @@ void Player::CommonUpdate()
     XMFLOAT3 moveDirection = CalculateMoveInput(pAim_);
     UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
 
-    // 移動距離の更新
-    accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
+    // 雪玉に当たっていない場合にのみ移動距離を更新
+    if (!isSnowHit_)
+    {
+        accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
+    }
     
     // 雪玉の更新
     UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
@@ -124,7 +127,7 @@ void Player::UpdateSnowBallScale(float scaleCoefficient, float maxScale)
     vMove += (newScale / maxScale) * vMove;
     XMFLOAT3 vec = {0.0f, 0.0f, 0.0f};
     XMStoreFloat3(&vec, vPos + vMove);
-    vec.y += newScale * inGround;
+    vec.y += newScale;
     pSnowBall_->SetPosition(vec);
 }
 
@@ -213,8 +216,13 @@ void Player::OnCollision(GameObject* pTarget)
         // プレイヤー自身が撃った雪玉でない場合にのみ
         if (ball->GetPlayer() != this)
         {
-            XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f }; // ノックバック方向
-            // ノックバックの方向と距離を設定
+            // ノックバック方向を計算
+            XMFLOAT3 knockbackDirection = { 0, 0, 1 };
+            //XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
+            //XMStoreFloat3(&knockbackDirection, vKnockbackDirection);
+            //knockbackDirection.y = 0.0f; // y軸の変化は考慮しない
+
+            // ノックバックの威力を設定
             float knockbackDistance = 5.0f; // ノックバック距離
 
             // ノックバック処理

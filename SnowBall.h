@@ -56,7 +56,6 @@ public:
 	Player* GetPlayer() const { return pPlayer_; }
 	void SetPlayer(Player* player) { pPlayer_ = player; }
 
-	// is•ûŒü(‘¬“x)‚ğæ“¾‚·‚é
-	XMFLOAT3 GetVelocity() { return velocity_; }
+	XMFLOAT3 GetPosition() { return transform_.position_; }
 };
 
