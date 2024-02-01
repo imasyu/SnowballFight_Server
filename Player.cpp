@@ -15,7 +15,7 @@ namespace {
 
 Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0), shotDirection_(0,0,0),
-    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false)
+    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false), upVelocity_(1.5f)
 {
 }
 
@@ -96,6 +96,47 @@ void Player::Update()
     {
         Shot();
     }
+
+    ///////////////////////////////kokkara
+    float delta = 0.3f;
+    if (isSnowHit_)
+    {
+        // 上方向への移動加速
+        transform_.position_.y += velocity_.y * delta;
+
+        // プレイヤーの位置を更新
+        transform_.position_.x += velocity_.x * delta;
+        transform_.position_.z += velocity_.z * delta;
+
+        // ノックバック時間の更新
+        knockbackTimer_ -= delta;
+
+        // ノックバックが終了したらフラグをリセット
+        if (knockbackTimer_ <= 0.0f) {
+            isSnowHit_ = false;
+            velocity_ = XMFLOAT3(0.0f, 0.0f, 0.0f); // ノックバック終了時に速度をリセット
+        }
+    }
+    else
+    {
+        // ノックバック中でない場合に滞空中かどうかを判定
+        if (IsInAir())
+        {
+            // 滞空中は地面に向かって位置を徐々に補正
+            float correctionSpeed = 0.5f; // 補正速度を調整
+            transform_.position_.y -= correctionSpeed * delta;
+        }
+        else
+        {
+            // 地面に着地している場合は滞空状態をリセット
+            float groundHeight = 0.0f;
+            if (RayCastGround(groundHeight) && fabs(groundHeight - transform_.position_.y) < 0.0f) // ここが修正された部分
+            {
+                transform_.position_.y = groundHeight;
+            }
+        }
+    }
+    /////////////////////////////kokomade
 }
 
 float Player::CalculateDistanceMoved(const XMFLOAT3& currentPosition, const XMFLOAT3& lastPosition)
@@ -213,8 +254,8 @@ void Player::OnCollision(GameObject* pTarget)
     if (pTarget->GetObjectName() == "SnowBall")
     {
         SnowBall* ball = static_cast<SnowBall*>(pTarget);
-        // プレイヤー自身が撃った雪玉でない場合にのみ
-        if (ball->GetPlayer() != this)
+        // プレイヤー自身が撃った雪玉でないかつ雪玉ヒットフラグがオフのとき
+        /*if (ball->GetPlayer() != this)
         {
             // ノックバックの方向を設定(雪玉の位置-プレイヤーの位置)
             XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f };
@@ -238,6 +279,56 @@ void Player::OnCollision(GameObject* pTarget)
 
             // プレイヤーの位置を更新
             transform_.position_ = newPosition;
+        }*/
+
+
+        ////////////////////////////////////kokkara
+        if (ball->GetPlayer() != this && !isSnowHit_)
+        {
+            // ヒットフラグ立てる
+            isSnowHit_ = true;
+
+            // ノックバック力
+            float knockbackPower = 1.5f;
+            
+            // ノックバックの方向を設定(雪玉の位置-プレイヤーの位置)
+            XMFLOAT3 knockbackDirection = { 0.0f, 0.0f, 0.0f };
+            XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
+            XMVector3Normalize(vKnockbackDirection);
+            XMStoreFloat3(&knockbackDirection, vKnockbackDirection);
+
+            velocity_.y = upVelocity_;
+            velocity_.x += knockbackDirection.x* knockbackPower;
+            velocity_.z += knockbackDirection.z* knockbackPower;
         }
+
+        ////////////////////////////////////////kokomade
     }
 }
+
+
+//////////////////////////////kokkara
+// 新しいメソッドを追加して滞空中かどうかを判定
+bool Player::IsInAir()
+{
+    float groundHeight = 0.0f;
+    return !RayCastGround(groundHeight) || (transform_.position_.y - groundHeight) < 0;
+}
+
+bool Player::RayCastGround(float& groundHeight)
+{
+    RayCastData data;
+    data.start = transform_.position_;      // レイの発射位置
+    data.start.y += 1.0f;                    // プレイヤーの高さからレイを発射
+    data.dir = { 0, -1, 0 };                // レイの方向
+    Model::RayCast(hGroundModel_, &data);
+
+    if (data.hit) {
+        groundHeight = data.dist;
+        return true;
+    }
+
+    return false;
+}
+
+//////////////////////////////////////kokomade

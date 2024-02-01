@@ -13,11 +13,14 @@ class Player : public GameObject
     int hGroundModel_;          // 地面のモデルのハンドル
     XMFLOAT3 lastPosition_;     // 前フレームの位置を記憶
     float accumulatedDistance_; // 移動距離の累積
-
+    //////////////////////////////kokkara
     XMFLOAT3 shotDirection_;    // 雪玉の発射方向
     bool isSnowHit_;            // 雪玉に当たったかどうかのフラグ
     float knockbackDistance_;   // ノックバック距離
     float knockbackTimer_;      // ノックバック経過時間
+    XMFLOAT3 velocity_;
+    float upVelocity_;
+    ////////////////////////////kokomade
 
     SphereCollider* pCollision_; // 球体コライダー
     Aim* pAim_;              // 照準
@@ -66,4 +69,11 @@ public:
 
     // 共通の更新処理
     void CommonUpdate();
+
+
+    //////////////////////////////kokkara
+    bool IsInAir();
+
+    bool RayCastGround(float& groundHeight);
+    ////////////////////////////kokomade
 };
