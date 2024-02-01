@@ -32,6 +32,7 @@ void Player::Initialize()
 
     //SnowBallのインスタンスを設定
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
+    pSnowBall_->SetPlayer(this);
 
     Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
     hGroundModel_ = pStage->GetModelHandle();    //モデル番号を取得
@@ -147,13 +148,15 @@ void Player::Shot()
 
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-    vMove = XMVector3TransformCoord(vMove, mRotY);
+    vMove = XMVector3TransformCoord(vMove, mRotY); 
     XMStoreFloat3(&shotDirection_, vMove);
 
     pSnowBall_->SetPosition(transform_.position_);
     pSnowBall_->SetVelocity(shotDirection_);
     pSnowBall_->SetIsShot(true);
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
+    pSnowBall_->SetPlayer(this);
+
 }
 
 void Player::RayCastStage()
@@ -217,11 +220,10 @@ void Player::OnCollision(GameObject* pTarget)
     // 雪玉に当たったとき
     if (pTarget->GetObjectName() == "SnowBall")
     {
+        SnowBall* ball = static_cast<SnowBall*>(pTarget);
         // プレイヤー自身が撃った雪玉でない場合にのみ
-        if (pSnowBall_ && pSnowBall_->GetPlayer() != this)
+        if (ball->GetPlayer() != this)
         {
-
-
             XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f }; // ノックバック方向
             // ノックバックの方向と距離を設定
             float knockbackDistance = 5.0f; // ノックバック距離

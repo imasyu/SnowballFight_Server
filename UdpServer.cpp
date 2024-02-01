@@ -65,7 +65,7 @@ bool UdpServer::Update()
 
 		if (data.shot == 0 || data.shot == 1) {
 			NetworkManager::GetOtherPlayer()->NotPlayerSetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
-			NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION);
+			NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION + 180.0f);
 			if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
 		}
 

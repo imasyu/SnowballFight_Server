@@ -9,7 +9,7 @@
 
 
 namespace {
-	const std::string SERVERPORT = "25.18.189.166";	//クライアントの時接続するサーバの数値を入れる
+	const std::string SERVERPORT = "192.168.42.98";	//クライアントの時接続するサーバの数値を入れる
 
 #if 1
 	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;

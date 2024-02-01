@@ -12,7 +12,7 @@ namespace {
 
 SnowBall::SnowBall(GameObject* parent)
 	: GameObject(parent, "SnowBall"), hModel_(-1), hGroundModel_(-1), velocity_(0.0f, 0.0f, 0.0f),
-	isShot_(false), frameCount_(0), gravity_(0.3f), pCollision_(nullptr)
+	isShot_(false), frameCount_(0), gravity_(0.3f), pCollision_(nullptr), pPlayer_(nullptr)
 {
 }
 
@@ -25,7 +25,6 @@ void SnowBall::Initialize()
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す
 	hGroundModel_ = pStage->GetModelHandle();		//モデル番号を取得
 
-	pPlayer_ = (Player*)FindObject("Player");
 	pCollision_ = new SphereCollider(XMFLOAT3(0, 0, 0), 0.1f);
 	AddCollider(pCollision_);
 }
