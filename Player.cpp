@@ -110,11 +110,12 @@ void Player::Update()
 
     if (isPlayer_ && Input::IsKeyDown(DIK_SPACE)) {
         Shot();
+        Hitparticle();
     }
 
-    if (Input::IsKeyDown(DIK_Q))
+    if (Input::IsKeyDown(DIK_G))
     {
-        Hitparticle();
+        pSnowBall_->Rollparticle();
     }
 }
 
