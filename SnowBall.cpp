@@ -2,6 +2,7 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Stage.h"
+#include "HitVFX.h"
 
 namespace {
 	static const float SPEED = 0.5f;
@@ -75,4 +76,26 @@ void SnowBall::SetScale(float scale)
 void SnowBall::SetVelocity(XMFLOAT3 velocity)
 {
 	velocity_ = { velocity.x * SPEED, velocity.y * SPEED, velocity.z * SPEED };
+}
+
+void SnowBall::Rollparticle()
+{
+	EmitterData data;
+	data.textureFileName = "defaultParticle.png";
+	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
+	data.delay = 0;
+	data.number = 40;
+	data.lifeTime = 30;
+	data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+	data.direction = XMFLOAT3(0, 1, 0);
+	data.directionRnd = XMFLOAT3(90, 90, 90);
+	data.speed = 0.25f;
+	data.speedRnd = 1;
+	data.accel = 0.93;
+	data.size = XMFLOAT2(0.4, 0.4);
+	data.sizeRnd = XMFLOAT2(0.4, 0.4);
+	data.scale = XMFLOAT2(0.99, 0.99);
+	data.color = XMFLOAT4(1, 1, 1, 1);
+	data.deltaColor = XMFLOAT4(0, 0, 0, 0);
+	data.gravity = 0.003f;
 }

@@ -27,6 +27,8 @@ public:
 
 	void SetVelocity(XMFLOAT3 velocity);
 
+	void Rollparticle();
+
 	void SetIsShot(bool b) { isShot_ = true; }
 
 };

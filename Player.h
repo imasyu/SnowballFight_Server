@@ -29,7 +29,7 @@ public:
     void Shot();
     void RayCastStage();
     void NotPlayerSetPosition(XMFLOAT3 pos);
-    void particle();
+    void Hitparticle();
 
 };
 
