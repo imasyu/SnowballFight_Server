@@ -8,7 +8,9 @@
 
 namespace {
     Text* pText = nullptr;
-
+    constexpr float PLAYER_SPEED = 0.1f;        // プレイヤーの移動速度
+    constexpr float SCALE_COEFFICIENT = 0.1f;   // 雪玉スケールの増加率を調整する係数
+    constexpr float MAX_SCALE = 2.0f;           // 雪玉の最大サイズ   
 }
 
 Player::Player(GameObject* parent)
@@ -40,105 +42,121 @@ void Player::Initialize()
     pCollision_ = new SphereCollider(XMFLOAT3(0, 0.8, 0), 1.1);
     AddCollider(pCollision_);
 
+    // マイナス対策
     transform_.position_ = { 100.0f, 0.0f, 100.0f };
     lastPosition_ = transform_.position_;
 
 }
 
-void Player::Update()
-{
-    //移動
-    if (!isPlayer_) return;
-        
-    lastPosition_ = transform_.position_;
-
-    XMFLOAT3 fMove = { 0,0,0 };
-    XMFLOAT3 aimDirection = pAim_->GetAimDirection();
-    if (Input::IsKey(DIK_W)) {
-        fMove.x += aimDirection.x;
-        fMove.z += aimDirection.z;
-    }
-    if (Input::IsKey(DIK_A)) {
-        fMove.x -= aimDirection.z;
-        fMove.z += aimDirection.x;
-    }
-    if (Input::IsKey(DIK_S)) {
-        fMove.x -= aimDirection.x;
-        fMove.z -= aimDirection.z;
-    }
-    if (Input::IsKey(DIK_D)) {
-        fMove.x += aimDirection.z;
-        fMove.z -= aimDirection.x;
-    }
-
-    XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-    XMVECTOR vMove = XMLoadFloat3(&fMove);
-    vMove = XMVector3Normalize(vMove);
-    vMove *= 0.1f;
-    XMStoreFloat3(&transform_.position_, vPos + vMove);
-
-    XMFLOAT3 diff;
-    diff.x = transform_.position_.x - lastPosition_.x;
-    diff.z = transform_.position_.z - lastPosition_.z;
-    float distanceMoved = sqrt(diff.x * diff.x + diff.z * diff.z);
-    accumulatedDistance_ += distanceMoved;
-
-    //スケールの上限
-    if (pSnowBall_) {
-        float scaleCoefficient = 0.1f; // スケールの増加率を調整する係数
-        float maxScale = 2.0;
-        float newScale = 0.1f + scaleCoefficient * accumulatedDistance_;
-
-        //スケールが最大値を超えないように
-        if (newScale > maxScale)
-        {
-            newScale = maxScale;
-        }
-        pSnowBall_->SetScale(newScale);
-
-        //ポジションのセット
-        XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-        XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
-        XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-        vMove = XMVector3TransformCoord(vMove, mRotY);
-        vMove += (newScale / maxScale) * vMove;
-        XMFLOAT3 vec = XMFLOAT3();
-        XMStoreFloat3(&vec, vPos + vMove);
-        vec.y += pSnowBall_->GetScale().x * 0.7f;
-        pSnowBall_->SetPosition(vec);
-
-    }
-
-    RayCastStage();
-
-    if (isPlayer_ && Input::IsKeyDown(DIK_SPACE)) {
-        Shot();
-    }
-
-}
-
-void Player::Draw()
-{
-	Model::SetTransform(hModel_, transform_);
-	Model::Draw(hModel_);
-
-    if (isPlayer_) {
-        pText->Draw(30, 100, transform_.position_.x);
-        pText->Draw(30, 140, transform_.position_.z);
-    }
-    
-}
-
-void Player::Release()
-{
-}
-
 void Player::InitializeIsPlayer()
 {
-	isPlayer_ = true;
-	pAim_ = Instantiate<Aim>(this);
-	pAim_->SetPlayer(this);
+    isPlayer_ = true;
+    pAim_ = Instantiate<Aim>(this);
+    pAim_->SetPlayer(this);
+}
 
+void Player::NotPlayerSetPosition(XMFLOAT3 pos)
+{
+    if (isPlayer_) return;
+
+    transform_.position_ = pos;
+    CommonUpdate();
+}
+
+void Player::CommonUpdate()
+{
+    lastPosition_ = transform_.position_;
+    XMFLOAT3 moveDirection = CalculateMoveInput(pAim_);
+    UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
+
+    // 移動距離の更新
+    accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
+    
+    // 雪玉の更新
+    UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
+
+    RayCastStage();
+}
+
+void Player::Update()
+{
+    if (!isPlayer_) return;
+
+    // 共通部分の更新
+    CommonUpdate();
+
+    // ステージとの判定処理
+    RayCastStage();
+
+    // 雪玉を発射する
+    if (Input::IsKeyDown(DIK_SPACE))
+    {
+        Shot();
+    }
+}
+
+float Player::CalculateDistanceMoved(const XMFLOAT3& currentPosition, const XMFLOAT3& lastPosition)
+{
+    XMFLOAT3 diff{ 0.0f, 0.0f, 0.0f };
+    diff.x = currentPosition.x - lastPosition.x;
+    diff.z = currentPosition.z - lastPosition.z;
+    return sqrt(diff.x * diff.x + diff.z * diff.z);
+}
+
+void Player::UpdateSnowBallScale(float scaleCoefficient, float maxScale)
+{
+    if (!pSnowBall_) return;
+    
+    float currentScale = pSnowBall_->GetScale().x;  // 現在の大きさを取得
+    float minScale = 0.1f;                          // 必ず正の値にする
+    float inGround = 0.7f;                          // 少し地面に埋める
+
+    // 移動距離に基づいた新しい大きさを計算
+    float newScale = minScale + scaleCoefficient * accumulatedDistance_;
+    if (newScale > maxScale) { newScale = maxScale; }
+    pSnowBall_->SetScale(newScale);
+
+    // 雪玉の位置を更新
+    XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+    XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
+    XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+    vMove = XMVector3TransformCoord(vMove, mRotY);
+    vMove += (newScale / maxScale) * vMove;
+    XMFLOAT3 vec = {0.0f, 0.0f, 0.0f};
+    XMStoreFloat3(&vec, vPos + vMove);
+    vec.y += newScale * inGround;
+    pSnowBall_->SetPosition(vec);
+}
+
+XMFLOAT3 Player::CalculateMoveInput(Aim* pAim)
+{
+    XMFLOAT3 aimDirection = pAim->GetAimDirection();
+    XMFLOAT3 inputDirection = { 0, 0, 0 };
+
+    if (Input::IsKey(DIK_W)) {
+        inputDirection.x += aimDirection.x;
+        inputDirection.z += aimDirection.z;
+    }
+    if (Input::IsKey(DIK_A)) {
+        inputDirection.x -= aimDirection.z;
+        inputDirection.z += aimDirection.x;
+    }
+    if (Input::IsKey(DIK_S)) {
+        inputDirection.x -= aimDirection.x;
+        inputDirection.z -= aimDirection.z;
+    }
+    if (Input::IsKey(DIK_D)) {
+        inputDirection.x += aimDirection.z;
+        inputDirection.z -= aimDirection.x;
+    }
+    return inputDirection;
+}
+
+void Player::UpdatePlayerPosition(const XMFLOAT3& moveDirection, float speed)
+{
+    XMVECTOR vMove = XMVector3Normalize(XMLoadFloat3(&moveDirection)) * speed;
+    XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+    XMStoreFloat3(&transform_.position_, vPos + vMove);
 }
 
 void Player::Shot()
@@ -156,63 +174,34 @@ void Player::Shot()
     pSnowBall_->SetIsShot(true);
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
     pSnowBall_->SetPlayer(this);
+}
 
+void Player::Draw()
+{
+    Model::SetTransform(hModel_, transform_);
+    Model::Draw(hModel_);
+
+    if (isPlayer_) 
+    {
+        pText->Draw(30, 100, transform_.position_.x);
+        pText->Draw(30, 140, transform_.position_.z);
+    }
+}
+
+void Player::Release()
+{
 }
 
 void Player::RayCastStage()
 {
     RayCastData data;
-    data.start = transform_.position_;   //レイの発射位置
-    data.start.y = 0;
-    data.dir = XMFLOAT3(0, -1, 0);       //レイの方向
-    Model::RayCast(hGroundModel_, &data); //レイを発射
+    data.start = transform_.position_;      // レイの発射位置
+    data.start.y = 0;                       // 座標0から撃つ
+    data.dir = { 0, -1, 0 };                // レイの方向
+    Model::RayCast(hGroundModel_, &data);
 
-    //レイが当たったら
-    if (data.hit)
-    {
-        //その分位置を下げる
-        transform_.position_.y = -data.dist;
-    }
-
-}
-
-void Player::NotPlayerSetPosition(XMFLOAT3 pos)
-{
-    lastPosition_ = transform_.position_;
-    transform_.position_ = pos;
-
-    XMFLOAT3 diff;
-    diff.x = pos.x - lastPosition_.x;
-    diff.z = pos.z - lastPosition_.z;
-    float distanceMoved = sqrt(diff.x * diff.x + diff.z * diff.z);
-    accumulatedDistance_ += distanceMoved;
-
-    //スケールの上限
-    if (pSnowBall_) {
-        float scaleCoefficient = 0.1f; // スケールの増加率を調整する係数
-        float maxScale = 2.0;
-        float newScale = 0.1f + scaleCoefficient * accumulatedDistance_;
-
-        //スケールが最大値を超えないように
-        if (newScale > maxScale)
-        {
-            newScale = maxScale;
-        }
-        pSnowBall_->SetScale(newScale);
-
-        RayCastStage();
-
-        //ポジションのセット
-        XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-        XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
-        XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-        vMove = XMVector3TransformCoord(vMove, mRotY);
-        vMove += (newScale / maxScale) * vMove;
-        XMFLOAT3 vec = XMFLOAT3();
-        XMStoreFloat3(&vec, vPos + vMove);
-        vec.y += pSnowBall_->GetScale().x * 0.7f;
-        pSnowBall_->SetPosition(vec);
-    }
+    // 当たったら、距離分位置を下げる
+    if (data.hit) { transform_.position_.y = -data.dist; }
 }
 
 void Player::OnCollision(GameObject* pTarget)
@@ -242,22 +231,6 @@ void Player::OnCollision(GameObject* pTarget)
 
             // プレイヤーの位置を更新
             transform_.position_ = newPosition;
-
-            /*
-            // 雪玉の進行方向ベクトルを取得
-            XMFLOAT3 snowballDirection = pSnowBall_->GetVelocity();
-
-            // ノックバック処理
-            XMVECTOR vKnockback = XMLoadFloat3(&snowballDirection);
-            vKnockback = XMVector3Normalize(vKnockback) * knockbackDistance;
-            XMFLOAT3 knockbackOffset;
-            XMStoreFloat3(&knockbackOffset, vKnockback);
-
-            transform_.position_.x += knockbackOffset.x;
-            transform_.position_.y += knockbackOffset.y;
-            transform_.position_.z += knockbackOffset.z;
-            */
-
         }
     }
 }

@@ -33,5 +33,20 @@ public:
     void RayCastStage();
     void NotPlayerSetPosition(XMFLOAT3 pos);
     void OnCollision(GameObject* pTarget);
+
+    void UpdatePlayerPosition(const XMFLOAT3& moveDirection, float speed);
+
+    /// <summary>
+    /// 雪玉の大きさを更新する関数
+    /// </summary>
+    /// <param name="scaleCoefficient">スケールの増加率を調整する係数</param>
+    /// <param name="maxScale">最大値</param>
+    void UpdateSnowBallScale(float scaleCoefficient, float maxScale);
+
+    float CalculateDistanceMoved(const XMFLOAT3& currentPosition, const XMFLOAT3& lastPosition);
+
+    XMFLOAT3 CalculateMoveInput(Aim* pAim);
+
+    void CommonUpdate();
 };
 
