@@ -35,6 +35,8 @@ void SnowBall::Update()
 		transform_.position_.y += velocity_.y;
 		transform_.position_.z += velocity_.z;
 
+		Rollparticle();
+
 		RayCastData data;
 		data.start = transform_.position_;   //ƒŒƒC‚Ì”­ŽËˆÊ’u
 		data.start.y = 0;
@@ -83,23 +85,21 @@ void SnowBall::SetVelocity(XMFLOAT3 velocity)
 void SnowBall::Rollparticle()
 {
 	EmitterData data;
-	data.textureFileName = "rlingA_Y.png";
+	data.textureFileName = "circle_Y.png";
 	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
-	data.delay = 1;
-	data.number = 40;
-	data.lifeTime = 30;
+	data.delay = 0;
+	data.number = 5;
+	data.lifeTime = 60;
 	data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
 	data.direction = XMFLOAT3(0, 0, 1);
 	data.directionRnd = XMFLOAT3(90, 90, 90);
-	data.speed = 0.1f;
+	data.speed = 0.3f;
 	data.speedRnd = 0;
 	data.accel = 0.93;
-	data.size = XMFLOAT2(0.4, 0.4);
+	data.size = XMFLOAT2(0.1, 0.1);
 	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.scale = XMFLOAT2(0.99, 0.99);
-	data.color = XMFLOAT4(1, 1, 1, 1);
-	data.deltaColor = XMFLOAT4(0, 0, 0, 0);
-	data.gravity = 0.001f;
+	data.color = XMFLOAT4(0, 0, 1, 1);
+	data.deltaColor = XMFLOAT4(0, 1, 1, 0);
 	VFX::Start(data);
 
 	float hitX = transform_.position_.x;
