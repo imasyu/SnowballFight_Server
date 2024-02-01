@@ -64,8 +64,9 @@ bool UdpServer::Update()
 		//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
 		if (data.shot == 0 || data.shot == 1) {
+			float rotate = (float)data.rotateY / (float)MAGNFICATION;
 			NetworkManager::GetOtherPlayer()->NotPlayerSetPosition(XMFLOAT3(pos.x, 0.0f, pos.z));
-			NetworkManager::GetOtherPlayer()->SetRotateY((float)data.rotateY / (float)MAGNFICATION + 180.0f);
+			NetworkManager::GetOtherPlayer()->SetRotateY(rotate);
 			if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
 		}
 
