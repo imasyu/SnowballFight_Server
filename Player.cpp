@@ -14,7 +14,7 @@ namespace {
 }
 
 Player::Player(GameObject* parent)
-	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0), shotDirection_(0,0,0),
+	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
     lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false)
 {
 }
@@ -84,6 +84,19 @@ void Player::CommonUpdate()
 void Player::Update()
 {
     if (!isPlayer_) return;
+
+    if (isSnowHit_) {
+        transform_.position_.x = knockDirection_.x;
+        transform_.position_.y = knockDirection_.y;
+        transform_.position_.z = knockDirection_.z;
+
+        const float d = 0.1f;   //重力
+        knockDirection_.y -= d;
+
+        if (transform_.position_.y <= -3.0f) isSnowHit_ = false;
+
+        return;
+    }
 
     // 共通部分の更新
     CommonUpdate();
@@ -170,10 +183,11 @@ void Player::Shot()
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY); 
-    XMStoreFloat3(&shotDirection_, vMove);
+    XMFLOAT3 direction = XMFLOAT3();
+    XMStoreFloat3(&direction, vMove);
 
     pSnowBall_->SetPosition(transform_.position_);
-    pSnowBall_->SetVelocity(shotDirection_);
+    pSnowBall_->SetVelocity(direction);
     pSnowBall_->SetIsShot(true);
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
     pSnowBall_->SetPlayer(this);
@@ -217,27 +231,19 @@ void Player::OnCollision(GameObject* pTarget)
         if (ball->GetPlayer() != this)
         {
             // ノックバックの方向を設定(雪玉の位置-プレイヤーの位置)
-            XMFLOAT3 knockbackDirection = { 1.0f, 0.0f, 1.0f };
             XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
 
             // ノックバックの威力を設定(後で累計移動距離にする)
-            float KnockbackPower = 2.0f;
+            float KnockbackPower = ball->GetScale().x * 0.01f;
 
             // 方向*威力
             XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
 
             // float3に戻す
-            XMStoreFloat3(&knockbackDirection, vKnockbackDirection);
-            XMFLOAT3 knockbackOffset = knockbackDirection;
+            XMStoreFloat3(&knockDirection_, vKnockbackDirection);
+            knockDirection_.y = ball->GetScale().x;
 
-            // 新しい位置を設定
-            XMFLOAT3 newPosition = transform_.position_;
-            newPosition.x += knockbackOffset.x;
-            newPosition.y += knockbackOffset.y;
-            newPosition.z += knockbackOffset.z;
-
-            // プレイヤーの位置を更新
-            transform_.position_ = newPosition;
+            ball->KillMe();
         }
     }
 }
