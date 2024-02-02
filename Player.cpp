@@ -83,21 +83,21 @@ void Player::CommonUpdate()
 
 void Player::Update()
 {
-    if (!isPlayer_) return;
-
     if (isSnowHit_) {
-        transform_.position_.x = knockDirection_.x;
-        transform_.position_.y = knockDirection_.y;
-        transform_.position_.z = knockDirection_.z;
+        transform_.position_.x -= knockDirection_.x;
+        transform_.position_.y -= knockDirection_.y;
+        transform_.position_.z -= knockDirection_.z;
 
-        const float d = 0.1f;   //重力
-        knockDirection_.y -= d;
+        const float d = 0.01f;   //重力
+        knockDirection_.y += d;
 
-        if (transform_.position_.y <= -3.0f) isSnowHit_ = false;
+        if (transform_.position_.y <= -5.0f) isSnowHit_ = false;
 
         return;
     }
 
+    if (!isPlayer_) return;
+    
     // 共通部分の更新
     CommonUpdate();
 
@@ -234,15 +234,17 @@ void Player::OnCollision(GameObject* pTarget)
             XMVECTOR vKnockbackDirection = XMVectorSubtract(XMLoadFloat3(&ball->GetPosition()), XMLoadFloat3(&transform_.position_));
 
             // ノックバックの威力を設定(後で累計移動距離にする)
-            float KnockbackPower = ball->GetScale().x * 0.01f;
+            float KnockbackPower = ball->GetScale().x;
+            KnockbackPower *= 0.1f;
 
             // 方向*威力
-            XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
+            vKnockbackDirection = XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
 
             // float3に戻す
             XMStoreFloat3(&knockDirection_, vKnockbackDirection);
-            knockDirection_.y = ball->GetScale().x;
+            knockDirection_.y = -ball->GetScale().x * 0.1f;
 
+            isSnowHit_ = true;
             ball->KillMe();
         }
     }
