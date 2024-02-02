@@ -65,13 +65,16 @@ void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 void Player::CommonUpdate()
 {
     lastPosition_ = transform_.position_;
-        
+    XMFLOAT3 moveDirection = XMFLOAT3();
+    if(pAim_) moveDirection = CalculateMoveInput(pAim_);
+    if(pAim_) UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
+
     // 雪玉に当たっていない場合にのみ移動距離を更新
     if (!isSnowHit_)
     {
         accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
     }
-    
+ 
     // 雪玉の更新
     UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
 
@@ -92,16 +95,9 @@ void Player::Update()
     }
 
     if (!isPlayer_) return;
-    
+
     // 共通部分の更新
     CommonUpdate();
-
-    // Key移動
-    XMFLOAT3 moveDirection = CalculateMoveInput(pAim_);
-    UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
-
-    // ステージとの判定処理
-    if(!isSnowHit_) RayCastStage();
 
     // 雪玉を発射する
     if (Input::IsKeyDown(DIK_SPACE))
@@ -234,7 +230,7 @@ void Player::OnCollision(GameObject* pTarget)
 
             // ノックバックの威力を設定(後で累計移動距離にする)
             float KnockbackPower = ball->GetScale().x;
-            KnockbackPower *= 0.1f;
+            KnockbackPower *= 0.3f;
 
             // 方向*威力
             vKnockbackDirection = XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
