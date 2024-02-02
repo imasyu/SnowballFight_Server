@@ -57,18 +57,15 @@ void Player::InitializeIsPlayer()
 
 void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 {
-    if (isPlayer_) return;
-
     transform_.position_ = pos;
     CommonUpdate();
+
 }
 
 void Player::CommonUpdate()
 {
     lastPosition_ = transform_.position_;
-    XMFLOAT3 moveDirection = CalculateMoveInput(pAim_);
-    UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
-
+        
     // 雪玉に当たっていない場合にのみ移動距離を更新
     if (!isSnowHit_)
     {
@@ -92,8 +89,6 @@ void Player::Update()
         knockDirection_.y += d;
 
         if (transform_.position_.y <= -5.0f) isSnowHit_ = false;
-
-        return;
     }
 
     if (!isPlayer_) return;
@@ -101,8 +96,12 @@ void Player::Update()
     // 共通部分の更新
     CommonUpdate();
 
+    // Key移動
+    XMFLOAT3 moveDirection = CalculateMoveInput(pAim_);
+    UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
+
     // ステージとの判定処理
-    RayCastStage();
+    if(!isSnowHit_) RayCastStage();
 
     // 雪玉を発射する
     if (Input::IsKeyDown(DIK_SPACE))
