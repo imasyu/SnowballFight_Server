@@ -90,6 +90,8 @@ void Player::CreateSnowBall()
 
 void Player::Update()
 {
+    if (transform_.position_.y <= -30.0f) transform_.position_ = { 100.0f, 0.0f, 100.0f };
+
     if (isSnowHit_) {
         transform_.position_.x -= knockDirection_.x;
         transform_.position_.y -= knockDirection_.y;
@@ -100,18 +102,15 @@ void Player::Update()
 
         RayCastData data;
         data.start = transform_.position_;      // レイの発射位置
+        data.start.y = 0.0f;
         data.dir = { 0, -1, 0 };                // レイの方向
         Model::RayCast(hGroundModel_, &data);
 
         // 当たったら、距離分位置を下げる
-        if (data.hit && transform_.position_.y > -data.dist ) {
+        if (data.hit && -transform_.position_.y > data.dist ) {
             transform_.position_.y = -data.dist; 
             isSnowHit_ = false; 
         }
-
-        //Rayが当たった
-        //０からの距離とプレイヤーの位置を比較
-
     }
 
     if (!isPlayer_) return;
