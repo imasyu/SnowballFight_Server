@@ -65,4 +65,8 @@ public:
 
     // ‹¤’Ê‚ÌXVˆ—
     void CommonUpdate();
+
+    // á‹Ê‚ğ‚½‚¹‚é
+    void CreateSnowBall();
+
 };

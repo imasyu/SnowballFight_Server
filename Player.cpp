@@ -81,6 +81,13 @@ void Player::CommonUpdate()
     RayCastStage();
 }
 
+void Player::CreateSnowBall()
+{
+    accumulatedDistance_ = 0.0f;
+    pSnowBall_ = Instantiate<SnowBall>(GetParent());
+    pSnowBall_->SetPlayer(this);
+}
+
 void Player::Update()
 {
     if (isSnowHit_) {
@@ -91,7 +98,20 @@ void Player::Update()
         const float d = 0.01f;   //重力
         knockDirection_.y += d;
 
-        if (transform_.position_.y <= -5.0f) isSnowHit_ = false;
+        RayCastData data;
+        data.start = transform_.position_;      // レイの発射位置
+        data.dir = { 0, -1, 0 };                // レイの方向
+        Model::RayCast(hGroundModel_, &data);
+
+        // 当たったら、距離分位置を下げる
+        if (data.hit && transform_.position_.y > -data.dist ) {
+            transform_.position_.y = -data.dist; 
+            isSnowHit_ = false; 
+        }
+
+        //Rayが当たった
+        //０からの距離とプレイヤーの位置を比較
+
     }
 
     if (!isPlayer_) return;
@@ -172,9 +192,6 @@ void Player::UpdatePlayerPosition(const XMFLOAT3& moveDirection, float speed)
 
 void Player::Shot()
 {
-    //増加率リセット
-    accumulatedDistance_ = 0.0f;
-
     XMVECTOR vMove = { 0.0f, 0.0f, 1.0f, 0.0f };
     XMMATRIX mRotY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     vMove = XMVector3TransformCoord(vMove, mRotY); 
@@ -184,8 +201,9 @@ void Player::Shot()
     pSnowBall_->SetPosition(transform_.position_);
     pSnowBall_->SetVelocity(direction);
     pSnowBall_->SetIsShot(true);
-    pSnowBall_ = Instantiate<SnowBall>(GetParent());
-    pSnowBall_->SetPlayer(this);
+
+    CreateSnowBall();
+
 }
 
 void Player::Draw()
@@ -221,7 +239,7 @@ void Player::OnCollision(GameObject* pTarget)
     // 雪玉に当たったとき
     if (pTarget->GetObjectName() == "SnowBall")
     {
-        SnowBall* ball = static_cast<SnowBall*>(pTarget);
+        SnowBall* ball = static_cast<SnowBall*>(pTarget);        
         // プレイヤー自身が撃った雪玉でない場合にのみ
         if (ball->GetPlayer() != this)
         {
@@ -241,6 +259,11 @@ void Player::OnCollision(GameObject* pTarget)
 
             isSnowHit_ = true;
             ball->KillMe();
+        }
+        //敵プレイヤーが打たずに持っている玉だったら
+        if (ball->GetIsShot() == false) {
+            ball->KillMe();
+            ball->GetPlayer()->CreateSnowBall();
         }
     }
 }

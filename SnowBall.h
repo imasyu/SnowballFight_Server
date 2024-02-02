@@ -48,6 +48,7 @@ public:
 
 	// Œ‚‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©
 	void SetIsShot(bool b) { isShot_ = true; }
+	bool GetIsShot() { return isShot_; }
 
 	// ‰½‚©‚É“–‚½‚Á‚½
 	void OnCollision(GameObject* pTarget) override;
