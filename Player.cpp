@@ -218,33 +218,35 @@ void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 
 void Player::Hitparticle()
 {
-    EmitterData data;
-    data.textureFileName = "defaultParticle.png";
-    data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
-    data.delay = 0;
-    data.number = 40;
-    data.lifeTime = 30;
-    data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
-    data.direction = XMFLOAT3(0, 1, 0);
-    data.directionRnd = XMFLOAT3(90, 90, 90);
-    data.speed = 0.25f;
-    data.speedRnd = 1;
-    data.accel = 0.93;
-    data.size = XMFLOAT2(0.4, 0.4);
-    data.sizeRnd = XMFLOAT2(0.4, 0.4);
-    data.scale = XMFLOAT2(0.99, 0.99);
-    data.color = XMFLOAT4(1, 1, 1, 1);
-    data.deltaColor = XMFLOAT4(0, 0, 0, 0);
-    data.gravity = 0.003f;
-    VFX::Start(data);
+    //“–‚½‚Á‚½Žž‚ÌVFX
+    {
+        EmitterData data;
+        data.textureFileName = "defaultParticle.png";
+        data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
+        data.delay = 0;
+        data.number = 40;
+        data.lifeTime = 30;
+        data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+        data.direction = XMFLOAT3(0, 1, 0);
+        data.directionRnd = XMFLOAT3(90, 90, 90);
+        data.speed = 0.25f;
+        data.speedRnd = 1;
+        data.accel = 0.93;
+        data.size = XMFLOAT2(0.4, 0.4);
+        data.sizeRnd = XMFLOAT2(0.4, 0.4);
+        data.scale = XMFLOAT2(0.99, 0.99);
+        data.color = XMFLOAT4(1, 1, 1, 1);
+        data.deltaColor = XMFLOAT4(0, 0, 0, 0);
+        data.gravity = 0.003f;
+        VFX::Start(data);
 
-    
 
-    float hitX = transform_.position_.x;
-    float hitY = transform_.position_.y;
-    float hitZ = transform_.position_.z;
 
-    HitVFX hitVFX;
-    hitVFX.CreatePosition(hitX, hitY, hitZ);
-    
+        float hitX = transform_.position_.x;
+        float hitY = transform_.position_.y;
+        float hitZ = transform_.position_.z;
+
+        HitVFX hitVFX;
+        hitVFX.CreatePosition(hitX, hitY, hitZ);
+    }
 }

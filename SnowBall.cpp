@@ -84,28 +84,31 @@ void SnowBall::SetVelocity(XMFLOAT3 velocity)
 
 void SnowBall::Rollparticle()
 {
-	EmitterData data;
-	data.textureFileName = "circle_Y.png";
-	data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
-	data.delay = 0;
-	data.number = 5;
-	data.lifeTime = 60;
-	data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
-	data.direction = XMFLOAT3(0, 0, 1);
-	data.directionRnd = XMFLOAT3(90, 90, 90);
-	data.speed = 0.3f;
-	data.speedRnd = 0;
-	data.accel = 0.93;
-	data.size = XMFLOAT2(0.1, 0.1);
-	data.sizeRnd = XMFLOAT2(0.4, 0.4);
-	data.color = XMFLOAT4(0, 0, 1, 1);
-	data.deltaColor = XMFLOAT4(0, 1, 1, 0);
-	VFX::Start(data);
+	//ê·ã ì]Ç™Ç¡ÇƒÇÈéûÇÃVFX
+	{
+		EmitterData data;
+		data.textureFileName = "circle_Y.png";
+		data.position = XMFLOAT3(transform_.position_.x, transform_.position_.y, transform_.position_.z);
+		data.delay = 0;
+		data.number = 10;
+		data.lifeTime = 60;
+		data.positionRnd = XMFLOAT3(0.5, 0, 0.5);
+		data.direction = XMFLOAT3(0, 0, 1);
+		data.directionRnd = XMFLOAT3(90, 90, 90);
+		data.speed = 0.3f;
+		data.speedRnd = 0;
+		data.accel = 0.93;
+		data.size = XMFLOAT2(0.1, 0.1);
+		data.sizeRnd = XMFLOAT2(0.4, 0.4);
+		data.color = XMFLOAT4(0, 0, 1, 1);
+		data.deltaColor = XMFLOAT4(0, 1, 1, 0);
+		VFX::Start(data);
 
-	float hitX = transform_.position_.x;
-	float hitY = transform_.position_.y;
-	float hitZ = transform_.position_.z;
+		float hitX = transform_.position_.x;
+		float hitY = transform_.position_.y;
+		float hitZ = transform_.position_.z;
 
-	HitVFX hitVFX;
-	hitVFX.CreatePosition(hitX, hitY, hitZ);
+		HitVFX hitVFX;
+		hitVFX.CreatePosition(hitX, hitY, hitZ);
+	}
 }
