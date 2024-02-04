@@ -16,7 +16,7 @@ Aim::Aim(GameObject* parent)
     pPlayer_(nullptr), isMove_(true), mouseSensitivity(0.0f), perspectiveDistance_(0.0f)
 {
     mouseSensitivity = 2.0f;
-    perspectiveDistance_ = 10.0f;
+    perspectiveDistance_ = 15.0f;
 
 }
 

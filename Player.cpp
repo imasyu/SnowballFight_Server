@@ -8,14 +8,18 @@
 
 namespace {
     Text* pText = nullptr;
-    constexpr float PLAYER_SPEED = 0.1f;        // プレイヤーの移動速度
+    constexpr float PLAYER_SPEED = 0.11f;        // プレイヤーの移動速度
+    constexpr float PLAYER_AIR_SPEED = 0.1f;   // プレイヤーの空中での移動速度
     constexpr float SCALE_COEFFICIENT = 0.1f;   // 雪玉スケールの増加率を調整する係数
     constexpr float MAX_SCALE = 2.0f;           // 雪玉の最大サイズ   
+    constexpr float POWER_XZ = 0.3f;           // 雪玉の飛ばす強さXZ   
+    constexpr float POWER_Y = 0.25f;           // 雪玉の飛ばす強さY
+
 }
 
 Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
-    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false)
+    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false), knockDirection_(0,0,0)
 {
 }
 
@@ -57,23 +61,20 @@ void Player::InitializeIsPlayer()
 
 void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 {
+    lastPosition_ = transform_.position_;
     transform_.position_ = pos;
+
     CommonUpdate();
 
 }
 
 void Player::CommonUpdate()
 {
-    lastPosition_ = transform_.position_;
-    XMFLOAT3 moveDirection = XMFLOAT3();
-    if(pAim_) moveDirection = CalculateMoveInput(pAim_);
-    if(pAim_) UpdatePlayerPosition(moveDirection, PLAYER_SPEED);
+    // 移動
+    if (pAim_) UpdatePlayerPosition(CalculateMoveInput(pAim_), PLAYER_SPEED);
 
     // 雪玉に当たっていない場合にのみ移動距離を更新
-    if (!isSnowHit_)
-    {
-        accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
-    }
+    if (!isSnowHit_) accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
  
     // 雪玉の更新
     UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
@@ -90,32 +91,51 @@ void Player::CreateSnowBall()
 
 void Player::Update()
 {
-    if (transform_.position_.y <= -30.0f) transform_.position_ = { 100.0f, 0.0f, 100.0f };
-
     if (isSnowHit_) {
-        transform_.position_.x -= knockDirection_.x;
-        transform_.position_.y -= knockDirection_.y;
-        transform_.position_.z -= knockDirection_.z;
+        // 移動
+        if (pAim_) UpdatePlayerPosition(CalculateMoveInput(pAim_), PLAYER_AIR_SPEED);
+        
+        // ノックバックの抑制
+        const float knock = 0.015f;
+        knockDirection_.x -= knockDirection_.x * knock;
+        knockDirection_.z -= knockDirection_.z * knock;
 
-        const float d = 0.01f;   //重力
-        knockDirection_.y += d;
+        // 重力
+        const float gravity = 0.01f;
+        knockDirection_.y -= gravity;
 
-        RayCastData data;
-        data.start = transform_.position_;      // レイの発射位置
-        data.start.y = 0.0f;
-        data.dir = { 0, -1, 0 };                // レイの方向
-        Model::RayCast(hGroundModel_, &data);
+        transform_.position_.x += knockDirection_.x;
+        transform_.position_.y += knockDirection_.y;
+        transform_.position_.z += knockDirection_.z;
 
-        // 当たったら、距離分位置を下げる
-        if (data.hit && -transform_.position_.y > data.dist ) {
-            transform_.position_.y = -data.dist; 
-            isSnowHit_ = false; 
+        // 雪玉の更新
+        UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
+
+        // 重力がマイナスの状態なら
+        if (knockDirection_.y < 0.0f) {
+            RayCastData data;
+            data.start = transform_.position_;
+            data.start.y = 0.0f;
+            data.dir = { 0, -1, 0 };
+            Model::RayCast(hGroundModel_, &data);
+
+            // 当たったら、距離分位置を下げる
+            if (data.hit && -transform_.position_.y > data.dist) {
+                transform_.position_.y = -data.dist;
+                isSnowHit_ = false;
+            }
         }
+
+        return;
     }
 
-    if (!isPlayer_) return;
+    if(!isPlayer_) return;
+
+    // 下行ったから中心に戻す
+    if (transform_.position_.y <= -30.0f) transform_.position_ = { 100.0f, 0.0f, 100.0f };
 
     // 共通部分の更新
+    lastPosition_ = transform_.position_;
     CommonUpdate();
 
     // 雪玉を発射する
@@ -247,14 +267,14 @@ void Player::OnCollision(GameObject* pTarget)
 
             // ノックバックの威力を設定(後で累計移動距離にする)
             float KnockbackPower = ball->GetScale().x;
-            KnockbackPower *= 0.3f;
+            KnockbackPower *= POWER_XZ;
 
             // 方向*威力
             vKnockbackDirection = XMVector3Normalize(vKnockbackDirection) * KnockbackPower;
 
             // float3に戻す
-            XMStoreFloat3(&knockDirection_, vKnockbackDirection);
-            knockDirection_.y = -ball->GetScale().x * 0.1f;
+            XMStoreFloat3(&knockDirection_, -vKnockbackDirection);
+            knockDirection_.y = ball->GetScale().x * POWER_Y;
 
             isSnowHit_ = true;
             ball->KillMe();

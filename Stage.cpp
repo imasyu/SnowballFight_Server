@@ -22,6 +22,8 @@ void Stage::Initialize()
 	assert(hModel_[1] >= 0);
 
 	transform_.position_ = { 100.0f, 0, 100.0f };
+	skyBox_ = transform_;
+	skyBox_.scale_ = { 10.0f, 10.0f, 10.0f };
 
 }
 
@@ -32,7 +34,7 @@ void Stage::Update()
 void Stage::Draw()
 {
 	Direct3D::SetShader(Direct3D::SHADER_SKYBOX);
-	Model::SetTransform(hModel_[0], transform_);
+	Model::SetTransform(hModel_[0], skyBox_);
 	Model::Draw(hModel_[0]);
 	
 	Direct3D::SetShader(Direct3D::SHADER_3D);

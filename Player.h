@@ -15,12 +15,11 @@ class Player : public GameObject
     float accumulatedDistance_; // 移動距離の累積
 
     bool isSnowHit_;            // 雪玉に当たったかどうかのフラグ
-    float knockbackTimer_;      // ノックバック経過時間
     XMFLOAT3 knockDirection_;   // 飛ぶ方向
 
-    SphereCollider* pCollision_; // 球体コライダー
-    Aim* pAim_;              // 照準
-    SnowBall* pSnowBall_;    // 雪玉
+    SphereCollider* pCollision_;    // 球体コライダー
+    Aim* pAim_;                     // 照準
+    SnowBall* pSnowBall_;           // 雪玉
 
 public:
     Player(GameObject* parent);

@@ -4,6 +4,7 @@
 class Stage : public GameObject
 {
     int hModel_[2];
+    Transform skyBox_;
 
 public:
     Stage(GameObject* parent);

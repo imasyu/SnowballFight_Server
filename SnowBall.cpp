@@ -4,10 +4,10 @@
 #include "Stage.h"
 
 namespace {
-	static const float	SPEED = 0.5f;
-	static const float	SCALE_CHANGE_RATE = 0.03f;
-	static const float	LOWER_LIMIT_Y = -10.0f;
-	static const int	ALIVE_TIME = 240;
+	static const float	SPEED = 0.4f;				//移動スピード
+	static const float	SCALE_CHANGE_RATE = 0.02f;	//１フレームでサイズ増やす値
+	static const float	LOWER_LIMIT_Y = -10.0f;		//これより下の座標になったらKILL
+	static const int	ALIVE_TIME = 240;			//LifeTime
 }
 
 SnowBall::SnowBall(GameObject* parent)
