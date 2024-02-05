@@ -80,7 +80,8 @@ void Player::CommonUpdate()
     // 雪玉の更新
     UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
 
-    RayCastStage();
+    if (!isSnowHit_) RayCastStage();
+
 }
 
 void Player::CreateSnowBall()
@@ -112,7 +113,7 @@ void Player::Update()
         UpdateSnowBallScale(SCALE_COEFFICIENT, MAX_SCALE);
 
         // 重力がマイナスの状態なら
-        if (knockDirection_.y < 0.0f) {
+        if (currentGravity_ < 0.0f) {
             RayCastData data;
             data.start = transform_.position_;
             data.start.y = 0.0f;
@@ -125,6 +126,13 @@ void Player::Update()
                 isSnowHit_ = false;
             }
         }
+       
+        // 下行ったから中心に戻す
+        if (transform_.position_.y <= -30.0f) {
+            transform_.position_ = { 100.0f, 0.0f, 100.0f };
+            currentGravity_ = 0.0f;
+            isSnowHit_ = false;
+        }
 
         return;
     }
@@ -132,7 +140,10 @@ void Player::Update()
     if(!isPlayer_) return;
 
     // 下行ったから中心に戻す
-    if (transform_.position_.y <= -30.0f) transform_.position_ = { 100.0f, 0.0f, 100.0f };
+    if (transform_.position_.y <= -30.0f) {
+        transform_.position_ = { 100.0f, 0.0f, 100.0f };
+        currentGravity_ = 0.0f;
+    }
 
     // 移動
     lastPosition_ = transform_.position_;
