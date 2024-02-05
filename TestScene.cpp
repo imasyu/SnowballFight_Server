@@ -6,7 +6,7 @@
 #include <string>
 #include "Player.h"
 #include "Stage.h"
-
+#include "VFXManager.h"
 
 namespace {
 	const std::string SERVERPORT = "192.168.42.98";	//クライアントの時接続するサーバの数値を入れる
@@ -30,6 +30,8 @@ TestScene::TestScene(GameObject * parent)
 //初期化
 void TestScene::Initialize()
 {
+	VFXManager::Initialize();
+
 	Instantiate<Stage>(this);
 	Player* p1 = Instantiate<Player>(this);
 	Player* p2 = Instantiate<Player>(this);

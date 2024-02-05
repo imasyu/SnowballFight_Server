@@ -2,6 +2,7 @@
 #include "Engine/Input.h"
 #include "SnowBall.h"
 #include "Stage.h"
+#include "VFXManager.h"
 
 namespace {
 	static const float	SPEED = 0.4f;				//移動スピード
@@ -37,6 +38,8 @@ void SnowBall::Update()
 	UpdateTransformation();
 	CheckRayCollision();
 	CheckDestructionConditions();
+
+	VFXManager::CreateSnowBallParticle(transform_.position_);
 }
 
 void SnowBall::Draw()

@@ -157,6 +157,7 @@
     <ClCompile Include="Udp.cpp" />
     <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="UdpServer.cpp" />
+    <ClCompile Include="VFXManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aim.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="Udp.h" />
     <ClInclude Include="UdpClient.h" />
     <ClInclude Include="UdpServer.h" />
+    <ClInclude Include="VFXManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\BillBoard.hlsl">

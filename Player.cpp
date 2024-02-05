@@ -5,6 +5,7 @@
 #include "Stage.h"
 #include "SnowBall.h"
 #include "Engine/Text.h"
+#include "VFXManager.h"
 
 namespace {
     Text* pText = nullptr;
@@ -301,6 +302,8 @@ void Player::OnCollision(GameObject* pTarget)
 
             isSnowHit_ = true;
             ball->KillMe();
+            VFXManager::CreateHitParticle(ball->GetPosition());
+
         }
         //“GƒvƒŒƒCƒ„[‚ª‘Å‚½‚¸‚ÉŽ‚Á‚Ä‚¢‚é‹Ê‚¾‚Á‚½‚ç
         if (ball->GetIsShot() == false) {
