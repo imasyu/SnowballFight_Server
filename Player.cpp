@@ -14,12 +14,13 @@ namespace {
     constexpr float MAX_SCALE = 2.0f;           // 雪玉の最大サイズ   
     constexpr float POWER_XZ = 0.3f;           // 雪玉の飛ばす強さXZ   
     constexpr float POWER_Y = 0.25f;           // 雪玉の飛ばす強さY
+    const float GRAVITY = 0.01f;
 
 }
 
 Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"), hModel_(-1), isPlayer_(false), pAim_(nullptr), hGroundModel_(-1), accumulatedDistance_(0),
-    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false), knockDirection_(0,0,0)
+    lastPosition_(0,0,0), pSnowBall_(nullptr), pCollision_(nullptr), isSnowHit_(false), knockDirection_(0,0,0), currentGravity_(0)
 {
 }
 
@@ -61,8 +62,11 @@ void Player::InitializeIsPlayer()
 
 void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 {
-    lastPosition_ = transform_.position_;
-    transform_.position_ = pos;
+    lastPosition_.x = transform_.position_.x;
+    lastPosition_.z = transform_.position_.z;
+
+    transform_.position_.x = pos.x;
+    transform_.position_.z = pos.z;
 
     CommonUpdate();
 
@@ -70,9 +74,6 @@ void Player::NotPlayerSetPosition(XMFLOAT3 pos)
 
 void Player::CommonUpdate()
 {
-    // 移動
-    if (pAim_) UpdatePlayerPosition(CalculateMoveInput(pAim_), PLAYER_SPEED);
-
     // 雪玉に当たっていない場合にのみ移動距離を更新
     if (!isSnowHit_) accumulatedDistance_ += CalculateDistanceMoved(transform_.position_, lastPosition_);
  
@@ -101,11 +102,10 @@ void Player::Update()
         knockDirection_.z -= knockDirection_.z * knock;
 
         // 重力
-        const float gravity = 0.01f;
-        knockDirection_.y -= gravity;
+        currentGravity_ -= GRAVITY;
 
         transform_.position_.x += knockDirection_.x;
-        transform_.position_.y += knockDirection_.y;
+        transform_.position_.y += currentGravity_;
         transform_.position_.z += knockDirection_.z;
 
         // 雪玉の更新
@@ -134,8 +134,11 @@ void Player::Update()
     // 下行ったから中心に戻す
     if (transform_.position_.y <= -30.0f) transform_.position_ = { 100.0f, 0.0f, 100.0f };
 
-    // 共通部分の更新
+    // 移動
     lastPosition_ = transform_.position_;
+    UpdatePlayerPosition(CalculateMoveInput(pAim_), PLAYER_SPEED);
+
+    // 共通部分の更新
     CommonUpdate();
 
     // 雪玉を発射する
@@ -241,7 +244,7 @@ void Player::Release()
 {
 }
 
-void Player::RayCastStage()
+bool Player::RayCastStage()
 {
     RayCastData data;
     data.start = transform_.position_;      // レイの発射位置
@@ -250,7 +253,16 @@ void Player::RayCastStage()
     Model::RayCast(hGroundModel_, &data);
 
     // 当たったら、距離分位置を下げる
-    if (data.hit) { transform_.position_.y = -data.dist; }
+    if (data.hit) { 
+        transform_.position_.y = -data.dist; 
+        currentGravity_ = 0.0f;
+        return true;
+    } else {
+        currentGravity_ -= GRAVITY;
+        transform_.position_.y += currentGravity_;
+        return false;
+    }
+
 }
 
 void Player::OnCollision(GameObject* pTarget)
@@ -274,7 +286,7 @@ void Player::OnCollision(GameObject* pTarget)
 
             // float3に戻す
             XMStoreFloat3(&knockDirection_, -vKnockbackDirection);
-            knockDirection_.y = ball->GetScale().x * POWER_Y;
+            currentGravity_ = ball->GetScale().x * POWER_Y;
 
             isSnowHit_ = true;
             ball->KillMe();

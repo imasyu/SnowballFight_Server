@@ -11,8 +11,9 @@ class Player : public GameObject
     bool isPlayer_;             // 操作するプレイヤーかどうか
     int hModel_;                // プレイヤーのモデルのハンドル
     int hGroundModel_;          // 地面のモデルのハンドル
-    XMFLOAT3 lastPosition_;     // 前フレームの位置を記憶
     float accumulatedDistance_; // 移動距離の累積
+    float currentGravity_;      // ぐらびｔｙ－
+    XMFLOAT3 lastPosition_;     // 前フレームの位置を記憶
 
     bool isSnowHit_;            // 雪玉に当たったかどうかのフラグ
     XMFLOAT3 knockDirection_;   // 飛ぶ方向
@@ -42,7 +43,7 @@ public:
     void Shot();
 
     // 地面との当たり判定を行う
-    void RayCastStage();
+    bool RayCastStage();
 
     // プレイヤーでない場合の位置設定
     void NotPlayerSetPosition(XMFLOAT3 pos);
