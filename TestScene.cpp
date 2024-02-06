@@ -22,7 +22,7 @@ namespace {
 void LoadPort()
 {
 	//ファイル読み込み
-	std::ifstream ifs2("Port");
+	std::ifstream ifs2("GameSeting/Port");
 	std::string data2;
 	ifs2 >> data2;
 	//stringからintへ変換し、そのあと値をセット
@@ -33,7 +33,7 @@ void LoadPort()
 void LoadMode()
 {
 	//ファイル読み込み
-	std::ifstream ifs2("Mode");
+	std::ifstream ifs2("GameSeting/Mode");
 	std::string data2;
 	ifs2 >> data2;
 	//stringからintへ変換し、そのあと値をセット
