@@ -13,7 +13,7 @@ namespace {
 
 Aim::Aim(GameObject* parent)
     : GameObject(parent, "Aim"), cameraPosition_{ 0,0,0 }, cameraTarget_{ 0,0,0 }, aimDirection_{ 0,0,0 },
-    pPlayer_(nullptr), isMove_(true), mouseSensitivity(0.0f), perspectiveDistance_(0.0f)
+    pPlayer_(nullptr), mouseSensitivity(0.0f), perspectiveDistance_(0.0f)
 {
     mouseSensitivity = 2.0f;
     perspectiveDistance_ = 15.0f;
@@ -32,13 +32,9 @@ void Aim::Initialize()
 
 void Aim::Update()
 {
-    if (Input::IsKeyDown(DIK_E)) isMove_ = !isMove_;
-
-    if (isMove_) {
-        CalcMouseMove();
-        pPlayer_->SetRotateY(transform_.rotate_.y - 180.0f);
-    }
-
+    CalcMouseMove();
+    pPlayer_->SetRotateY(transform_.rotate_.y - 180.0f);
+    
     CalcAim();
 
 }

@@ -4,11 +4,9 @@
 #include "Aim.h"
 #include "Stage.h"
 #include "SnowBall.h"
-#include "Engine/Text.h"
 #include "VFXManager.h"
 
 namespace {
-    Text* pText = nullptr;
     constexpr float PLAYER_SPEED = 0.11f;        // プレイヤーの移動速度
     constexpr float PLAYER_AIR_SPEED = 0.1f;   // プレイヤーの空中での移動速度
     constexpr float SCALE_COEFFICIENT = 0.1f;   // 雪玉スケールの増加率を調整する係数
@@ -34,9 +32,6 @@ void Player::Initialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("yukidaruma.fbx");
 	assert(hModel_ >= 0);
-
-    pText = new Text();
-    pText->Initialize();
 
     //SnowBallのインスタンスを設定
     pSnowBall_ = Instantiate<SnowBall>(GetParent());
@@ -245,11 +240,6 @@ void Player::Draw()
     Model::SetTransform(hModel_, transform_);
     Model::Draw(hModel_);
 
-    if (isPlayer_) 
-    {
-        pText->Draw(30, 100, (int)transform_.position_.x);
-        pText->Draw(30, 140, (int)transform_.position_.z);
-    }
 }
 
 void Player::Release()

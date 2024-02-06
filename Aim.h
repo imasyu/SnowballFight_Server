@@ -3,7 +3,6 @@
 
 class Aim : public GameObject
 {
-    bool isMove_;                   //エイムを動かすかどうか
     float perspectiveDistance_;     //どのくらい後ろから映すか
     float mouseSensitivity;         //マウス感度
     XMFLOAT3 cameraTarget_;         //カメラの焦点目標

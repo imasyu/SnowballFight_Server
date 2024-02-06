@@ -6,23 +6,45 @@
 #include <string>
 #include "Player.h"
 #include "Stage.h"
-#include "VFXManager.h"
+
+#include <fstream>
+#include <string>
+#include <sstream>
+using namespace std;
 
 namespace {
-	const std::string SERVERPORT = "192.168.42.98";	//クライアントの時接続するサーバの数値を入れる
-
-#if 1
+	std::string SERVERPORT;	//クライアントの時接続するサーバの数値を入れる
 	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_SERVER;
-#else
-	NetworkManager::SOCKET_MODE mode = NetworkManager::SOCKET_MODE::UDP_CLIENT;
-#endif
 
-	Text* pText = nullptr;
-	int timeCount = 0;
+}
+
+void LoadPort()
+{
+	//ファイル読み込み
+	std::ifstream ifs2("Port");
+	std::string data2;
+	ifs2 >> data2;
+	//stringからintへ変換し、そのあと値をセット
+	std::istringstream ss2 = std::istringstream(data2);
+	ss2 >> SERVERPORT;	//クライアントの時接続するサーバの数値を入れる;
+}
+
+void LoadMode()
+{
+	//ファイル読み込み
+	std::ifstream ifs2("Mode");
+	std::string data2;
+	ifs2 >> data2;
+	//stringからintへ変換し、そのあと値をセット
+	std::istringstream ss2 = std::istringstream(data2);
+	int nm = 0;
+	ss2 >> nm;	//クライアントの時接続するサーバの数値を入れる;
+	if (nm == 1) mode = NetworkManager::SOCKET_MODE::UDP_CLIENT;
+
 }
 
 //コンストラクタ
-TestScene::TestScene(GameObject * parent)
+TestScene::TestScene(GameObject* parent)
 	: GameObject(parent, "TestScene"), pPlayerSelf_(nullptr), pPlayerOther_(nullptr)
 {
 }
@@ -30,12 +52,13 @@ TestScene::TestScene(GameObject * parent)
 //初期化
 void TestScene::Initialize()
 {
-	VFXManager::Initialize();
+	LoadPort();
+	LoadMode();
 
 	Instantiate<Stage>(this);
 	Player* p1 = Instantiate<Player>(this);
 	Player* p2 = Instantiate<Player>(this);
-	
+
 	if (mode == 0) {
 		p1->InitializeIsPlayer();
 		pPlayerSelf_ = p1;
@@ -47,11 +70,9 @@ void TestScene::Initialize()
 		pPlayerOther_ = p1;
 	}
 
-	if(NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_) == 0) PostQuitMessage(0);
-	if(NetworkManager::CreateSocket(mode, SERVERPORT) == 0) PostQuitMessage(0);
+	if (NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_) == 0) PostQuitMessage(0);
+	if (NetworkManager::CreateSocket(mode, SERVERPORT) == 0) PostQuitMessage(0);
 
-	pText = new Text();
-	pText->Initialize();
 
 }
 
@@ -65,9 +86,6 @@ void TestScene::Update()
 //描画
 void TestScene::Draw()
 {
-	pText->Draw(30, 30, (timeCount / 60));
-	timeCount++;
-
 }
 
 //開放
