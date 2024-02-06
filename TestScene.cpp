@@ -6,6 +6,7 @@
 #include <string>
 #include "Player.h"
 #include "Stage.h"
+#include "VFXManager.h"
 
 #include <fstream>
 #include <string>
@@ -54,6 +55,7 @@ void TestScene::Initialize()
 {
 	LoadPort();
 	LoadMode();
+	VFXManager::Initialize();
 
 	Instantiate<Stage>(this);
 	Player* p1 = Instantiate<Player>(this);
