@@ -160,7 +160,7 @@ float Player::CalculateDistanceMoved(const XMFLOAT3& currentPosition, const XMFL
     XMFLOAT3 diff{ 0.0f, 0.0f, 0.0f };
     diff.x = currentPosition.x - lastPosition.x;
     diff.z = currentPosition.z - lastPosition.z;
-    return sqrt((float)diff.x * (float)diff.x + (float)diff.z * (float)diff.z);
+    return sqrtf((float)diff.x * (float)diff.x + (float)diff.z * (float)diff.z);
 }
 
 void Player::UpdateSnowBallScale(float scaleCoefficient, float maxScale)
