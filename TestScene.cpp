@@ -76,7 +76,6 @@ void TestScene::Initialize()
 	if (NetworkManager::CreateSocket(mode, SERVERPORT) == 0) PostQuitMessage(0);
 
 
-}
 
 //XV
 void TestScene::Update()
