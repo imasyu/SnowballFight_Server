@@ -74,7 +74,7 @@ void TestScene::Initialize()
 
 	if (NetworkManager::Initialize(pPlayerSelf_, pPlayerOther_) == 0) PostQuitMessage(0);
 	if (NetworkManager::CreateSocket(mode, SERVERPORT) == 0) PostQuitMessage(0);
-
+}
 
 
 //çXêV
