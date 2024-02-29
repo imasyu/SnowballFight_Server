@@ -8,7 +8,7 @@ namespace {
     static const float UP_MOUSE_LIMIT = -60.0f;
     static const float DOWN_MOUSE_LIMIT = 60.0f;
     static const float MOUSE_SPEED = 0.05f;
-
+    static const float MOUSE_INIT = 360.0f;
 }
 
 Aim::Aim(GameObject* parent)
@@ -71,8 +71,9 @@ void Aim::CalcMouseMove()
     transform_.rotate_.x -= (mouseMove.y * MOUSE_SPEED) * mouseSensitivity; //ècï˚å¸ÇÃâÒì]
 
     //É}ÉCÉiÉXÇ…Ç»ÇÁÇ»Ç¢ÇÊÇ§Ç…ó}êß
-    if (transform_.rotate_.y <= 0.0f) transform_.rotate_.y = 360.0f;
 
+    if (transform_.rotate_.y < MOUSE_INIT) transform_.rotate_.y = MOUSE_INIT * 2.0f;
+    if (transform_.rotate_.y > 720.0f) transform_.rotate_.y = MOUSE_INIT;
     //ó}êß
     if (transform_.rotate_.x <= UP_MOUSE_LIMIT) transform_.rotate_.x = UP_MOUSE_LIMIT;
     if (transform_.rotate_.x >= DOWN_MOUSE_LIMIT) transform_.rotate_.x = DOWN_MOUSE_LIMIT;

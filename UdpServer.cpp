@@ -60,8 +60,6 @@ bool UdpServer::Update()
 	if (Recv(sock_, &data)) {
 		//éÛêMÇ≈Ç´ÇΩ
 		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
-		//OutputDebugString(("X = " + std::to_string(pos.x) + " : Y = " + std::to_string(pos.z) + "\n").c_str());
-		//OutputDebugString((std::to_string(data.shot) + "\n").c_str());
 
 		if (data.shot == 0 || data.shot == 1) {
 			float rotate = (float)data.rotateY / (float)MAGNFICATION;
