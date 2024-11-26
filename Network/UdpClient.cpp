@@ -51,16 +51,15 @@ bool UdpClient::Update()
 	data.shot = Input::IsKeyDown(DIK_SPACE);
 
 	// 送信
-	if (!Send(sock_, data)) {
-		OutputDebugString("送信エラー\n");
+	if (Send(sock_, data) == 0) {
 		return false;
 	}
 
 	DATA rData;
 
 	//受信
-	if (!Recv(sock_, &rData)) {
-		OutputDebugString("受信エラー\n");
+	int resultRe = Recv(sock_, &rData);
+	if (resultRe == 0 || resultRe == -1) {
 		return false;
 	}
 
@@ -75,7 +74,7 @@ bool UdpClient::Update()
 	return true;
 }
 
-bool UdpClient::Recv(SOCKET sock, DATA* value)
+int UdpClient::Recv(SOCKET sock, DATA* value)
 {
 	DATA recvValue;	// 受信データの格納領域...ネットワークバイトオーダー状態
 
@@ -87,12 +86,12 @@ bool UdpClient::Recv(SOCKET sock, DATA* value)
 		// 正常に送られたけどデータはない
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			OutputDebugString("no Data\n");
-			return true;
+			return 0;
 		}
 		// エラー
 		else {
 			OutputDebugString("Update Error\n");
-			return false;
+			return -1;
 		}
 	}
 
@@ -102,10 +101,10 @@ bool UdpClient::Recv(SOCKET sock, DATA* value)
 	value->rotateY = ntohl(recvValue.rotateY);
 	value->shot = ntohs(recvValue.shot);
 
-	return true;
+	return 1;
 }
 
-bool UdpClient::Send(SOCKET sock, DATA value)
+int UdpClient::Send(SOCKET sock, DATA value)
 {
 	//送信データ:ネットワークバイトオーダーに変換後の値を格納
 	DATA sendValue;
@@ -124,9 +123,9 @@ bool UdpClient::Send(SOCKET sock, DATA value)
 	int ret = sendto(sock, (char*)&sendValue, sizeof(sendValue), 0, (SOCKADDR*)&toAddr, sizeof(toAddr));
 	if (ret != sizeof(sendValue))
 	{
-		OutputDebugString("送れなかった\n");
-		return false;
+		OutputDebugString("送信エラー\n");
+		return 0;
 	}
 
-	return true;
+	return 1;
 }

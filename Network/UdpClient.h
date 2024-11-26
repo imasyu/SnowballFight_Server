@@ -8,8 +8,8 @@ public:
 	bool CreateSocket(std::string port) override;
 	bool Update() override;
 
-	bool Recv(SOCKET sock, DATA* value) override;
-	bool Send(SOCKET sock, DATA value) override;
+	int Recv(SOCKET sock, DATA* value) override;
+	int Send(SOCKET sock, DATA value) override;
 
 };
 

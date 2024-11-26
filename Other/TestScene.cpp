@@ -61,10 +61,14 @@ void TestScene::Initialize()
 
 	if (mode == 0) {
 		p1->InitializeIsPlayer();
+		OutputDebugString("1");
+
 		pPlayerSelf_ = p1;
 		pPlayerOther_ = p2;
 	}
 	else {
+		OutputDebugString("2");
+
 		p2->InitializeIsPlayer();
 		pPlayerSelf_ = p2;
 		pPlayerOther_ = p1;

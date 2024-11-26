@@ -57,7 +57,8 @@ bool UdpServer::Update()
 {
 	//受信
 	DATA data;
-	if (Recv(sock_, &data)) {
+	int resultRe = Recv(sock_, &data);
+	if (resultRe == 1) {
 		//受信できた
 		XMFLOAT3 pos = { (float)data.posX / (float)MAGNFICATION, 0.0f, (float)data.posZ / (float)MAGNFICATION };
 
@@ -67,10 +68,8 @@ bool UdpServer::Update()
 			NetworkManager::GetOtherPlayer()->SetRotateY(rotate);
 			if (data.shot) NetworkManager::GetOtherPlayer()->Shot();
 		}
-
 	}
-	else {
-		OutputDebugString("受信エラー\n");
+	else if(resultRe == -1) {
 		return false;
 	}
 
@@ -81,15 +80,14 @@ bool UdpServer::Update()
 	data.rotateY = (NetworkManager::GetSelfPlayer()->GetRotate().y * MAGNFICATION);
 	data.shot = Input::IsKeyDown(DIK_SPACE);
 
-	if (!Send(sock_, data)) {
-		OutputDebugString("送信エラー\n");
+	if (Send(sock_, data) == -1) {
 		return false;
 	}
 
 	return true;
 }
 
-bool UdpServer::Recv(SOCKET sock, DATA* value)
+int UdpServer::Recv(SOCKET sock, DATA* value)
 {
 	DATA recvValue;	// 受信データの格納領域...ネットワークバイトオーダー状態
 
@@ -100,12 +98,12 @@ bool UdpServer::Recv(SOCKET sock, DATA* value)
 		// 正常に送られたけどデータはない
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			OutputDebugString("no Data\n");
-			return true;
+			return 0;
 		}
 		// エラー
 		else {
 			OutputDebugString("Update Error\n");
-			return false;
+			return -1;
 		}
 	}
 
@@ -118,7 +116,7 @@ bool UdpServer::Recv(SOCKET sock, DATA* value)
 	return 1;
 }
 
-bool UdpServer::Send(SOCKET sock, DATA value)
+int UdpServer::Send(SOCKET sock, DATA value)
 {
 	//送信データ:ネットワークバイトオーダーに変換後の値を格納
 	DATA sendValue;
@@ -134,8 +132,8 @@ bool UdpServer::Send(SOCKET sock, DATA value)
 	if (ret_ != sizeof(sendValue))
 	{
 		OutputDebugString("送れなかった\n");
-		return false;
+		return 0;
 	}
 
-	return true;
+	return 1;
 }
