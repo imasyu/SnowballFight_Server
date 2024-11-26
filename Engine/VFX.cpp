@@ -261,7 +261,7 @@ int VFX::Start(EmitterData emitterData)
     pEmitter->frameCount = 0;
 
     pEmitter->pBillBoard = new BillBoard;
-    pEmitter->pBillBoard->Load(emitterData.textureFileName);
+    pEmitter->pBillBoard->Load("Image/" + emitterData.textureFileName);
 
     emitterList_.push_back(pEmitter);
 

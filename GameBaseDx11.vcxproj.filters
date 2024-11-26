@@ -24,11 +24,11 @@
       <UniqueIdentifier>{47a6a3f5-8cfd-436b-8d58-beccd108f3f3}</UniqueIdentifier>
       <Extensions>hlsl</Extensions>
     </Filter>
-    <Filter Include="03Scene">
-      <UniqueIdentifier>{566e9812-a813-491b-a0fd-ddeda5c1b587}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{42040ee4-d402-4ea1-843c-fedddbc8423b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{6a30ca30-dc32-41ea-82b8-812de400a089}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -101,32 +101,30 @@
     <ClCompile Include="Engine\VFX.cpp">
       <Filter>01Engine\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>03Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkManager.cpp">
+    <ClCompile Include="Network\NetworkManager.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="UdpServer.cpp">
+    <ClCompile Include="Network\Udp.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="UdpClient.cpp">
+    <ClCompile Include="Network\UdpClient.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="Udp.cpp">
+    <ClCompile Include="Network\UdpServer.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>03Scene</Filter>
+    <ClCompile Include="Player\Aim.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="Aim.cpp">
-      <Filter>03Scene</Filter>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
-      <Filter>03Scene</Filter>
+    <ClCompile Include="Player\SnowBall.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
-    <ClCompile Include="SnowBall.cpp" />
-    <ClCompile Include="VFXManager.cpp" />
+    <ClCompile Include="Other\Stage.cpp" />
+    <ClCompile Include="Other\TestScene.cpp" />
+    <ClCompile Include="Other\VFXManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\BoxCollider.h">
@@ -198,32 +196,30 @@
     <ClInclude Include="Engine\VFX.h">
       <Filter>01Engine\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="TestScene.h">
-      <Filter>03Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="NetworkManager.h">
+    <ClInclude Include="Network\NetworkManager.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="UdpServer.h">
+    <ClInclude Include="Network\Udp.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="UdpClient.h">
+    <ClInclude Include="Network\UdpClient.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="Udp.h">
+    <ClInclude Include="Network\UdpServer.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>03Scene</Filter>
+    <ClInclude Include="Player\Aim.h">
+      <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="Aim.h">
-      <Filter>03Scene</Filter>
+    <ClInclude Include="Player\Player.h">
+      <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="Stage.h">
-      <Filter>03Scene</Filter>
+    <ClInclude Include="Player\SnowBall.h">
+      <Filter>Player</Filter>
     </ClInclude>
-    <ClInclude Include="SnowBall.h" />
-    <ClInclude Include="VFXManager.h" />
+    <ClInclude Include="Other\Stage.h" />
+    <ClInclude Include="Other\TestScene.h" />
+    <ClInclude Include="Other\VFXManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shader\Simple2D.hlsl">

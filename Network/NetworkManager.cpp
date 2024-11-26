@@ -2,7 +2,7 @@
 #include <WS2tcpip.h>
 #include "UdpServer.h"
 #include "UdpClient.h"
-#include "Player.h"
+#include "../Player/Player.h"
 
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;

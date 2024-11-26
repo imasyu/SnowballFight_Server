@@ -1,10 +1,10 @@
 #include "Player.h"
-#include "Engine/Model.h"
-#include "Engine/Input.h"
 #include "Aim.h"
-#include "Stage.h"
 #include "SnowBall.h"
-#include "VFXManager.h"
+#include "../Engine/Model.h"
+#include "../Engine/Input.h"
+#include "../Other/Stage.h"
+#include "../Other/VFXManager.h"
 
 namespace {
     constexpr float PLAYER_SPEED = 0.11f;        // プレイヤーの移動速度
@@ -30,7 +30,7 @@ Player::~Player()
 void Player::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("yukidaruma.fbx");
+	hModel_ = Model::Load("Model/yukidaruma.fbx");
 	assert(hModel_ >= 0);
 
     //SnowBallのインスタンスを設定

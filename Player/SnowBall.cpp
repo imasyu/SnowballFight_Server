@@ -1,8 +1,8 @@
-#include "Engine/Model.h"
-#include "Engine/Input.h"
 #include "SnowBall.h"
-#include "Stage.h"
-#include "VFXManager.h"
+#include "../Engine/Model.h"
+#include "../Engine/Input.h"
+#include "../Other/Stage.h"
+#include "../Other/VFXManager.h"
 
 namespace {
 	static const float	SPEED = 0.4f;				//移動スピード
@@ -20,7 +20,7 @@ SnowBall::SnowBall(GameObject* parent)
 void SnowBall::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("SnowBall.fbx");
+	hModel_ = Model::Load("Model/SnowBall.fbx");
 	assert(hModel_ >= 0);
 
 	Stage* pStage = (Stage*)FindObject("Stage");    //ステージオブジェクトを探す

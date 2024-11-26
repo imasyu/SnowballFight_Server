@@ -1,10 +1,8 @@
 #include "sceneManager.h"
-
-#include "../TestScene.h"
 #include "Model.h"
 #include "Image.h"
 #include "Audio.h"
-
+#include "../Other/TestScene.h"
 
 //コンストラクタ
 SceneManager::SceneManager(GameObject * parent)

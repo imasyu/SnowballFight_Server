@@ -1,6 +1,6 @@
 #include "Aim.h"
-#include "Engine/Input.h"
-#include "Engine/Camera.h"
+#include "../Engine/Input.h"
+#include "../Engine/Camera.h"
 #include "Player.h"
 
 namespace {

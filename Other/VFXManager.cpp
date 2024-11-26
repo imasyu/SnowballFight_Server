@@ -1,5 +1,5 @@
 #include "VFXManager.h"
-#include "Engine/VFX.h"
+#include "../Engine/VFX.h"
 
 namespace VFXManager {
 	EmitterData hit;
@@ -18,11 +18,11 @@ namespace VFXManager {
 		snow.directionRnd = XMFLOAT3(90, 90, 90);
 		snow.speed = 0.3f;
 		snow.speedRnd = 0;
-		snow.accel = 0.93;
-		snow.size = XMFLOAT2(0.1, 0.1);
-		snow.sizeRnd = XMFLOAT2(0.4, 0.4);
-		snow.color = XMFLOAT4(0, 0, 1, 1);
-		snow.deltaColor = XMFLOAT4(0, 1, 1, 0);
+		snow.accel = 0.93f;
+		snow.size = XMFLOAT2(0.1f, 0.1f);
+		snow.sizeRnd = XMFLOAT2(0.4f, 0.4f);
+		snow.color = XMFLOAT4(0.f, 0.f, 1.f, 1.f);
+		snow.deltaColor = XMFLOAT4(0.f, 1.f, 1.f, 0.f);
 
 		//“–‚½‚Á‚½Žž‚ÌVFX
 		hit.textureFileName = "defaultParticle.png";
@@ -30,17 +30,17 @@ namespace VFXManager {
 		hit.delay = 0;
 		hit.number = 40;
 		hit.lifeTime = 30;
-		hit.positionRnd = XMFLOAT3(0.5, 0, 0.5);
-		hit.direction = XMFLOAT3(0, 1, 0);
-		hit.directionRnd = XMFLOAT3(90, 90, 90);
+		hit.positionRnd = XMFLOAT3(0.5f, 0.f, 0.5f);
+		hit.direction = XMFLOAT3(0.f, 1.f, 0.f);
+		hit.directionRnd = XMFLOAT3(90.f, 90.f, 90.f);
 		hit.speed = 0.25f;
 		hit.speedRnd = 1;
-		hit.accel = 0.93;
-		hit.size = XMFLOAT2(0.4, 0.4);
-		hit.sizeRnd = XMFLOAT2(0.4, 0.4);
-		hit.scale = XMFLOAT2(0.99, 0.99);
-		hit.color = XMFLOAT4(1, 1, 1, 1);
-		hit.deltaColor = XMFLOAT4(0, 0, 0, 0);
+		hit.accel = 0.93f;
+		hit.size = XMFLOAT2(0.4f, 0.4f);
+		hit.sizeRnd = XMFLOAT2(0.4f, 0.4f);
+		hit.scale = XMFLOAT2(0.99f, 0.99f);
+		hit.color = XMFLOAT4(1.f, 1.f, 1.f, 1.f);
+		hit.deltaColor = XMFLOAT4(0.f, 0.f, 0.f, 0.f);
 		hit.gravity = 0.003f;
 	}
 

@@ -1,10 +1,8 @@
 #include "TestScene.h"
-#include "Engine/SceneManager.h"
-#include "Engine/Input.h"
-#include "NetworkManager.h"
-#include "Engine/Text.h"
-#include <string>
-#include "Player.h"
+#include "../Engine/SceneManager.h"
+#include "../Engine/Input.h"
+#include "../Network/NetworkManager.h"
+#include "../Player/Player.h"
 #include "Stage.h"
 #include "VFXManager.h"
 
